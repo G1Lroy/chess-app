@@ -1,24 +1,36 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { CreateBoard } from "./models/BoardRender/CreateBoard";
+import "./App.css";
+import { Board } from "./models/Board/Board";
+import { FileCoords } from "./models/Piece/Coordinates";
 
 function App() {
+  const boardControl = new Board();
+  const createBoard = new CreateBoard();
+  const board = createBoard.constructBoard(boardControl);
+  const fileNames = Object.values(FileCoords) as string[];
+
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <div className="board">
+        {board.map((row, rowIndex) => (
+          <div key={rowIndex} className="row">
+            <span className="files">{8 - rowIndex}</span>
+            {row.map((cell, cellIndex) => (
+              <div key={cellIndex} className={`cell ${cell.color === "dark" ? "dark" : "light"}`}>
+                <div className={`cell-content ${cell.content?.color ? "black-piece" : "light-piece"}`}>
+                  {cell.content?.icon}
+                </div>
+              </div>
+            ))}
+          </div>
+        ))}
+        <div className="ranks">
+          {fileNames.map((file, idx) => (
+            <span key={idx}>{file}</span>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }

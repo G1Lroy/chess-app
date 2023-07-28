@@ -1,38 +1,70 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
 .App {
-  text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+
+
+.row {
+    text-align: center;
+    display: flex;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.cell {
+    font-size: 20px;
+    width: 55px;
+    height: 55px;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+.cell.light {
+    background: #ebccae;
 }
 
-.App-link {
-  color: #61dafb;
+.cell.dark {
+    background: #d2694c;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.cell-content {
+    cursor: pointer;
+    user-select: none;
+    font-size: 41px;
+    transition: all 75ms ease-in;
+}
+.cell-content:hover{
+    transform: scale(1.1);
+}
+
+.cell-content.black-piece {
+    color: #000000;
+    text-shadow: 1px 1px white;
+
+}
+
+.cell-content.light-piece {
+    color: #ffffff;
+    text-shadow: 1px 2px rgb(0, 0, 0);
+}
+
+.ranks {
+    text-align: center;
+    font-size: 20px;
+    padding-left: 8.63px;
+}
+
+.ranks span {
+    display: inline-block;
+    width: 55px;
+}
+
+.files {
+    font-size: 20px;
+    padding: 14px 5px 0 0;
 }
