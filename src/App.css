@@ -22,6 +22,11 @@
     font-size: 20px;
     width: 55px;
     height: 55px;
+
+}
+
+.cell.highlight {
+    box-shadow: inset 0px 0px 0px 2px #5900ff;
 }
 
 .cell.light {
@@ -36,9 +41,10 @@
     cursor: pointer;
     user-select: none;
     font-size: 41px;
-    transition: all 75ms ease-in;
+    transition: transform 75ms ease-in;
 }
-.cell-content:hover{
+
+.cell-content:hover {
     transform: scale(1.1);
 }
 
@@ -52,6 +58,13 @@
     color: #ffffff;
     text-shadow: 1px 2px rgb(0, 0, 0);
 }
+
+.cell-content.active {
+    color: #7e3ff6;
+    text-shadow: 1px 2px rgb(81, 229, 245);
+    ;
+}
+
 
 .ranks {
     text-align: center;
