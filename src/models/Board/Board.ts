@@ -12,17 +12,16 @@ export class Board {
 
   constructor() {
     this.defaultPieceSetup();
-    this.setPiece(new Knight(Color.WHITE, new Coordinates("D", 4)), new Coordinates("D", 4));
+    this.setPiece(new Knight(Color.WHITE, new Coordinates("D", 5)), new Coordinates("D", 5));
+    
   }
 
   public setPiece(piece: Piece, coordinates: Coordinates): void {
-    this.piecesOnBoard.push({ piece, coordinates });
+    if (piece) this.piecesOnBoard.push({ piece, coordinates });
   }
 
   public removePiece(coordinates: Coordinates) {
-    return (this.piecesOnBoard = this.piecesOnBoard.filter(
-      (piece) => !piece.coordinates.equals(coordinates)
-    ));
+    this.piecesOnBoard = this.piecesOnBoard.filter((piece) => !piece.coordinates.equals(coordinates));
   }
 
   public movePiece(from: Coordinates, to: Coordinates): void {
@@ -38,74 +37,26 @@ export class Board {
       this.setPiece(new Pawn(Color.BLACK, new Coordinates(x, 7)), new Coordinates(x, 7));
     }
     // set rooks
-    this.setPiece(
-      new Rook(Color.WHITE, new Coordinates(fileCoords[0], 1)),
-      new Coordinates(fileCoords[0], 1)
-    );
-    this.setPiece(
-      new Rook(Color.WHITE, new Coordinates(fileCoords[7], 1)),
-      new Coordinates(fileCoords[7], 1)
-    );
-    this.setPiece(
-      new Rook(Color.BLACK, new Coordinates(fileCoords[0], 8)),
-      new Coordinates(fileCoords[0], 8)
-    );
-    this.setPiece(
-      new Rook(Color.BLACK, new Coordinates(fileCoords[7], 8)),
-      new Coordinates(fileCoords[7], 8)
-    );
+    this.setPiece(new Rook(Color.WHITE, new Coordinates("A", 1)), new Coordinates("A", 1));
+    this.setPiece(new Rook(Color.WHITE, new Coordinates("H", 1)), new Coordinates("H", 1));
+    this.setPiece(new Rook(Color.BLACK, new Coordinates("A", 8)), new Coordinates("A", 8));
+    this.setPiece(new Rook(Color.BLACK, new Coordinates("H", 8)), new Coordinates("H", 8));
     // set knight
-    this.setPiece(
-      new Knight(Color.WHITE, new Coordinates(fileCoords[1], 1)),
-      new Coordinates(fileCoords[1], 1)
-    );
-    this.setPiece(
-      new Knight(Color.WHITE, new Coordinates(fileCoords[6], 1)),
-      new Coordinates(fileCoords[6], 1)
-    );
-    this.setPiece(
-      new Knight(Color.BLACK, new Coordinates(fileCoords[1], 8)),
-      new Coordinates(fileCoords[6], 8)
-    );
-    this.setPiece(
-      new Knight(Color.BLACK, new Coordinates(fileCoords[6], 8)),
-      new Coordinates(fileCoords[1], 8)
-    );
+    this.setPiece(new Knight(Color.WHITE, new Coordinates("B", 1)), new Coordinates("B", 1));
+    this.setPiece(new Knight(Color.WHITE, new Coordinates("G", 1)), new Coordinates("G", 1));
+    this.setPiece(new Knight(Color.BLACK, new Coordinates("B", 8)), new Coordinates("B", 8));
+    this.setPiece(new Knight(Color.BLACK, new Coordinates("G", 8)), new Coordinates("G", 8));
     //set bishops
-    this.setPiece(
-      new Bishop(Color.WHITE, new Coordinates(fileCoords[2], 1)),
-      new Coordinates(fileCoords[2], 1)
-    );
-    this.setPiece(
-      new Bishop(Color.WHITE, new Coordinates(fileCoords[5], 1)),
-      new Coordinates(fileCoords[5], 1)
-    );
-    this.setPiece(
-      new Bishop(Color.BLACK, new Coordinates(fileCoords[2], 8)),
-      new Coordinates(fileCoords[2], 8)
-    );
-    this.setPiece(
-      new Bishop(Color.BLACK, new Coordinates(fileCoords[5], 8)),
-      new Coordinates(fileCoords[5], 8)
-    );
+    this.setPiece(new Bishop(Color.WHITE, new Coordinates("C", 1)), new Coordinates("C", 1));
+    this.setPiece(new Bishop(Color.WHITE, new Coordinates("F", 1)), new Coordinates("F", 1));
+    this.setPiece(new Bishop(Color.BLACK, new Coordinates("C", 8)), new Coordinates("C", 8));
+    this.setPiece(new Bishop(Color.BLACK, new Coordinates("F", 8)), new Coordinates("F", 8));
     //set queens
-    this.setPiece(
-      new Queen(Color.WHITE, new Coordinates(fileCoords[3], 1)),
-      new Coordinates(fileCoords[3], 1)
-    );
-    this.setPiece(
-      new Queen(Color.BLACK, new Coordinates(fileCoords[3], 8)),
-      new Coordinates(fileCoords[3], 8)
-    );
+    this.setPiece(new Queen(Color.WHITE, new Coordinates("D", 1)), new Coordinates("D", 1));
+    this.setPiece(new Queen(Color.BLACK, new Coordinates("D", 8)), new Coordinates("D", 8));
     // set kings
-    this.setPiece(
-      new King(Color.WHITE, new Coordinates(fileCoords[4], 1)),
-      new Coordinates(fileCoords[4], 1)
-    );
-    this.setPiece(
-      new King(Color.BLACK, new Coordinates(fileCoords[4], 8)),
-      new Coordinates(fileCoords[4], 8)
-    );
+    this.setPiece(new King(Color.WHITE, new Coordinates("E", 1)), new Coordinates("E", 1));
+    this.setPiece(new King(Color.BLACK, new Coordinates("E", 8)), new Coordinates("E", 8));
   }
 
   public isCellDark(coordinates: Coordinates): boolean {
@@ -126,7 +77,6 @@ export class Board {
   }
 
   public isCellUsed(coordinates: Coordinates): boolean {
-
     for (const item of this.piecesOnBoard) {
       if (item.coordinates.equals(coordinates)) return true;
     }

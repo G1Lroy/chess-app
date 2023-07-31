@@ -2,19 +2,38 @@ import { ConstructBoard } from "./models/BoardConstruct/ConstructBoard";
 import "./App.css";
 import { Board } from "./models/Board/Board";
 import { Coordinates, fileCoords } from "./models/Piece/Coordinates";
-import { Piece } from "./models/Piece/Piece";
+import { Color, Piece } from "./models/Piece/Piece";
 import { useEffect, useState } from "react";
+import { Knight } from "./models/Piece/Knight";
 
 function App() {
-  const [initBoard, setInitBoard] = useState(new Board());
-  const [board, seBoard] = useState(new ConstructBoard().constructBoard(initBoard));
+  const [boardControl, setBoardControl] = useState(new Board());
+
+  const boardArray = new ConstructBoard().constructBoard(boardControl);
+  const [board, setBoard] = useState(boardArray);
+
   const [selectedPiece, setSelectedPiece] = useState({} as Piece | undefined | null);
   const [availableCells, setAvailableCells] = useState([] as Coordinates[] | undefined | null);
 
-  const handleClick = (piece: Piece | undefined): void => {
-    setSelectedPiece(piece);
-    setAvailableCells(piece?.getAvailableCell(initBoard));
+  const handleClick = (piece: Piece | undefined, cell: Coordinates): void => {
+    if (piece) {
+      setSelectedPiece(piece);
+      setAvailableCells(piece.getAvailableCell(boardControl));
+    } else if (availableCells && selectedPiece) {
+      for (const cellCorrd of availableCells) {
+        if (cell.equals(cellCorrd)) {
+          boardControl.movePiece(selectedPiece.coordinates, cell);
+          setSelectedPiece(null);
+          setAvailableCells(null);
+        }
+      }
+    }
+    return;
   };
+
+  useEffect(() => {
+    setBoard(boardArray);
+  }, [selectedPiece]);
 
   return (
     <div
@@ -22,7 +41,7 @@ function App() {
       onContextMenu={(e) => {
         e.preventDefault();
         setSelectedPiece(null);
-        setAvailableCells(null );
+        setAvailableCells(null);
       }}
     >
       <div className="board">
@@ -31,13 +50,13 @@ function App() {
             <span className="files">{8 - rowIndex}</span>
             {row.map((cell, cellIndex) => (
               <div
+                onClick={() => handleClick(cell.piece, cell.coordinates)}
                 key={cellIndex}
                 className={`cell ${cell.color === "dark" ? "dark" : "light"}
               ${availableCells?.some((item) => item.equals(cell?.coordinates)) ? "highlight" : ""}
               `}
               >
                 <div
-                  onClick={() => handleClick(cell.piece)}
                   className={`cell-content ${cell.piece?.color ? "black-piece" : "light-piece"} ${
                     cell.piece && selectedPiece && selectedPiece.coordinates?.equals(cell.piece.coordinates)
                       ? "active"
@@ -63,3 +82,4 @@ function App() {
 export default App;
 
 // добавить шейк всех вигур перед игрой
+// через useEffect board и boardControl обновляеться с корректными координатами

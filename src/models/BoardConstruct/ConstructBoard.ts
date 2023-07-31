@@ -7,14 +7,13 @@ export class ConstructBoard {
     board: Board
   ): { piece: Piece | undefined; color: string; coordinates: Coordinates }[][] {
     const boardArray: { piece: Piece | undefined; color: string; coordinates: Coordinates }[][] = [];
-
     for (let x = 8; x >= 1; x--) {
       const row: { piece: Piece | undefined; color: string; coordinates: Coordinates }[] = [];
       for (const y of fileCoords) {
         const coordinates = new Coordinates(y, x);
-        const pieceOnBoard = board.getPieceByCoordinates(coordinates);
-        const cellColor = board.colorizeCell(board.isCellDark(coordinates));
-        row.push({ piece: pieceOnBoard || undefined, color: cellColor, coordinates });
+        const piece = board.getPieceByCoordinates(coordinates);
+        const color = board.colorizeCell(board.isCellDark(coordinates));
+        row.push({ piece: piece || undefined, color, coordinates });
       }
       boardArray.push(row);
     }

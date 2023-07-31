@@ -40,7 +40,7 @@ export abstract class Piece {
 
   public getAvailableCell(board: Board): Coordinates[] {
     const resultCells = [];
-    
+
     for (const shift of this.getPieceMoves()) {
       if (this.coordinates.canShift(shift)) {
         const coordinatesToShift = this.coordinates.shift(shift);
