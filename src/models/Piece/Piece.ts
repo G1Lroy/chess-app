@@ -1,6 +1,4 @@
-import { Board } from "../Board/Board";
-import { Coordinates } from "./Coordinates";
-import { CoordinatesShift } from "./CoordinatesShift";
+import { Cell } from "../Cell/Cell";
 
 export enum Color {
   WHITE,
@@ -27,37 +25,26 @@ export enum PieceIcons {
 
 export abstract class Piece {
   public readonly color: Color;
-  public coordinates: Coordinates;
+  public cell: Cell;
   public name: PieceNames;
   public icon: string;
 
-  constructor(color: Color, coordinates: Coordinates) {
+  constructor(color: Color, cell: Cell) {
     this.color = color;
-    this.coordinates = coordinates;
+    this.cell = cell;
+    this.cell.piece = this;
     this.name = PieceNames.PIECE;
     this.icon = PieceIcons.PIECE;
   }
 
-  public getAvailableCell(board: Board): Coordinates[] {
-    const resultCells = [];
-
-    for (const shift of this.getPieceMoves()) {
-      if (this.coordinates.canShift(shift)) {
-        const coordinatesToShift = this.coordinates.shift(shift);
-        if (this.isCellavilableToMove(coordinatesToShift, board)) {
-          resultCells.push(coordinatesToShift);
-        }
-      }
+  public isCellavilableToMove(targetCell: Cell): boolean {
+    if (this.color === targetCell.piece?.color) {
+      return false;
+    } else if (targetCell.piece?.name === PieceNames.KING) {
+      return false;
+    } else {
+      return true;
     }
-    return resultCells;
   }
-
-  public isCellavilableToMove(coordinatesToShift: Coordinates, board: Board): boolean {
-    return (
-      !board.isCellUsed(coordinatesToShift) ||
-      board.getPieceByCoordinates(coordinatesToShift)?.color != this.color
-    );
-  }
-
-  protected abstract getPieceMoves(): CoordinatesShift[];
+  public move(target: Cell) {}
 }

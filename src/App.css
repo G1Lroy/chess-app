@@ -19,14 +19,34 @@
 }
 
 .cell {
+    position: relative;
     font-size: 20px;
     width: 55px;
     height: 55px;
+    cursor: pointer;
+    user-select: none;
+    font-size: 41px;
+    transition: transform 75ms ease-in;
 
 }
 
-.cell.highlight {
-    box-shadow: inset 0px 0px 0px 2px #5900ff;
+.highlight {
+   
+    position: absolute;
+
+    width: 100%;
+    height: 100%;
+    /* border-radius: 3px; */
+
+
+}
+
+.highlight.empty {
+    box-shadow: inset 0px 0px 5px 0px #7700ff;
+}
+
+.highlight.piece {
+    box-shadow: inset 0px 0px 10px 0px #ff0000;
 }
 
 .cell.light {
@@ -37,32 +57,22 @@
     background: #d2694c;
 }
 
-.cell-content {
-    cursor: pointer;
-    user-select: none;
-    font-size: 41px;
-    transition: transform 75ms ease-in;
-}
 
-.cell-content:hover {
-    transform: scale(1.1);
-}
-
-.cell-content.black-piece {
+.cell.black-piece {
     color: #000000;
     text-shadow: 1px 1px white;
 
 }
 
-.cell-content.light-piece {
+.cell.light-piece {
     color: #ffffff;
     text-shadow: 1px 2px rgb(0, 0, 0);
 }
 
-.cell-content.active {
+.cell.active {
     color: #7e3ff6;
     text-shadow: 1px 2px rgb(81, 229, 245);
-    ;
+
 }
 
 
