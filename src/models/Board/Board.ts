@@ -9,11 +9,30 @@ import { Rook } from "../Piece/Rook";
 
 export class Board {
   piecesOnBoard: { piece: Piece; coordinates: Coordinates }[] = [];
+  boardArray: { piece: Piece | undefined; color: string; coordinates: Coordinates }[][] = [];
 
   constructor() {
-    this.defaultPieceSetup();
-    this.setPiece(new Knight(Color.WHITE, new Coordinates("D", 5)), new Coordinates("D", 5));
-    
+
+  }
+
+  public clone(): Board {
+    const newBoard = new Board();
+    newBoard.piecesOnBoard = this.piecesOnBoard;
+    return newBoard;
+  }
+
+  public constructBoard(): { piece: Piece | undefined; color: string; coordinates: Coordinates }[][] {
+    for (let x = 8; x >= 1; x--) {
+      const row: { piece: Piece | undefined; color: string; coordinates: Coordinates }[] = [];
+      for (const y of fileCoords) {
+        const coordinates = new Coordinates(y, x);
+        const piece = this.getPieceByCoordinates(coordinates);
+        const color = this.colorizeCell(this.isCellDark(coordinates));
+        row.push({ piece: piece || undefined, color, coordinates });
+      }
+      this.boardArray.push(row);
+    }
+    return this.boardArray;
   }
 
   public setPiece(piece: Piece, coordinates: Coordinates): void {
