@@ -37,7 +37,7 @@ export abstract class Piece {
     this.icon = PieceIcons.PIECE;
   }
 
-  public isCellavilableToMove(targetCell: Cell): boolean {
+  public canMove(targetCell: Cell): boolean {
     if (this.color === targetCell.piece?.color) {
       return false;
     } else if (targetCell.piece?.name === PieceNames.KING) {

@@ -8,4 +8,8 @@ export class Bishop extends Piece {
     this.name = PieceNames.BISHOP;
     this.icon = PieceIcons.BISHOP;
   }
+  public canMove(targetCell: Cell): boolean {
+    if (!super.canMove(targetCell)) return false;
+    return false;
+  }
 }
