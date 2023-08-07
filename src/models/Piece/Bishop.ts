@@ -10,6 +10,7 @@ export class Bishop extends Piece {
   }
   public canMove(targetCell: Cell): boolean {
     if (!super.canMove(targetCell)) return false;
+    if (this.cell.isEmptyDiagonal(targetCell)) return true;
     return false;
   }
 }

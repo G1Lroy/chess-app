@@ -41,8 +41,7 @@ export class Board {
     }
   }
   public defaultPieceSetup(): void {
-    new Queen(Color.WHITE, this.getCell(4, 3));
-    new Pawn(Color.BLACK, this.getCell(4, 4));
+     new Rook(Color.BLACK, this.getCell(5, 5));
     // set pawns
     for (let x = 0; x < 8; x++) {
       new Pawn(Color.BLACK, this.getCell(x, 1));

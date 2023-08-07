@@ -3,6 +3,7 @@ import { Cell } from "../models/Cell/Cell";
 import CellComponent from "./CellComponent";
 import { Board } from "../models/Board/Board";
 import { rankCoordinates } from "../helpers/rankCoordinates";
+import { PieceNames } from "../models/Piece/Piece";
 
 interface BoardProps {
   board: Board;
@@ -17,6 +18,7 @@ const BoardComponent: FC<BoardProps> = ({ board, setBoard }) => {
       setSelectedCell(cell);
     }
     if (selectedCell && selectedCell !== cell && selectedCell.piece?.canMove(cell)) {
+    
       selectedCell.movePiece(cell);
       setSelectedCell(null);
     }

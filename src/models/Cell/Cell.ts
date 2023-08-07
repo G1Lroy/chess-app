@@ -82,4 +82,8 @@ export class Cell {
     }
     return true;
   }
+  isEnemy(target: Cell): boolean {
+    if (!target.piece) return false;
+    return this.piece?.color !== target.piece?.color;
+  }
 }

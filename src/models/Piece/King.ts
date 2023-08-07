@@ -7,4 +7,10 @@ export class King extends Piece {
     this.name = PieceNames.KING;
     this.icon = PieceIcons.KING;
   }
+  public canMove(targetCell: Cell): boolean {
+    if (!super.canMove(targetCell)) return false;
+
+    // Проверяем, что ход является допустимым для коня
+    return false;
+  }
 }

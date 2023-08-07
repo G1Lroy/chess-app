@@ -38,13 +38,9 @@ export abstract class Piece {
   }
 
   public canMove(targetCell: Cell): boolean {
-    if (this.color === targetCell.piece?.color) {
-      return false;
-    } else if (targetCell.piece?.name === PieceNames.KING) {
-      return false;
-    } else {
-      return true;
-    }
+    if (this.color === targetCell.piece?.color) return false;
+    else if (targetCell.piece?.name === PieceNames.KING) return false;
+    return true;
   }
-  public move(target: Cell) {}
+  // public movePiece(target: Cell) {}
 }

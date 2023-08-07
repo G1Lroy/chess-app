@@ -8,4 +8,10 @@ export class Rook extends Piece {
     this.name = PieceNames.ROOK;
     this.icon = PieceIcons.ROOK;
   }
+  public canMove(targetCell: Cell): boolean {
+    if (!super.canMove(targetCell)) return false;
+    if (this.cell.isEmptyHorizontal(targetCell)) return true;
+    if (this.cell.isEmptyVetrical(targetCell)) return true;
+    return false;
+  }
 }
