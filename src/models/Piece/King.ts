@@ -7,10 +7,14 @@ export class King extends Piece {
     this.name = PieceNames.KING;
     this.icon = PieceIcons.KING;
   }
+
   public canMove(targetCell: Cell): boolean {
     if (!super.canMove(targetCell)) return false;
 
-    // Проверяем, что ход является допустимым для коня
-    return false;
+    const diffX = Math.abs(this.cell.x - targetCell.x);
+    const diffY = Math.abs(this.cell.y - targetCell.y);
+
+    return diffX <= 1 && diffY <= 1;
   }
 }
+// если таргер === possibleToAttack выходим

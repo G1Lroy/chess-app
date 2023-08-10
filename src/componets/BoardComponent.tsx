@@ -3,7 +3,7 @@ import { Cell } from "../models/Cell/Cell";
 import CellComponent from "./CellComponent";
 import { Board } from "../models/Board/Board";
 import { rankCoordinates } from "../helpers/rankCoordinates";
-import { PieceNames } from "../models/Piece/Piece";
+import { Color, PieceNames } from "../models/Piece/Piece";
 
 interface BoardProps {
   board: Board;
@@ -11,14 +11,14 @@ interface BoardProps {
 }
 
 const BoardComponent: FC<BoardProps> = ({ board, setBoard }) => {
+  
   const [selectedCell, setSelectedCell] = useState<Cell | null>(null);
 
   const clickHandler = (cell: Cell) => {
     if (cell.piece) {
       setSelectedCell(cell);
     }
-    if (selectedCell && selectedCell !== cell && selectedCell.piece?.canMove(cell)) {
-    
+    if (selectedCell && selectedCell !== cell && cell.availableToMove) {
       selectedCell.movePiece(cell);
       setSelectedCell(null);
     }
@@ -32,6 +32,7 @@ const BoardComponent: FC<BoardProps> = ({ board, setBoard }) => {
     board.highlightCells(selectedCell);
     setBoard(board.clone());
   };
+
   return (
     <div
       onContextMenu={(e) => {
@@ -42,7 +43,7 @@ const BoardComponent: FC<BoardProps> = ({ board, setBoard }) => {
     >
       {board.cells.map((row, rowIndex) => (
         <div key={rowIndex} className="row">
-          <span className="files">{8 - rowIndex}</span>
+          <span className="files">{rowIndex}</span>
           {row.map((cell, cellIndex) => (
             <CellComponent
               key={cellIndex}
@@ -54,8 +55,8 @@ const BoardComponent: FC<BoardProps> = ({ board, setBoard }) => {
         </div>
       ))}
       <div className="ranks">
-        {rankCoordinates.map((rank) => (
-          <span key={rank}>{rank}</span>
+        {rankCoordinates.map((rank, idx) => (
+          <span key={rank}>{idx}</span>
         ))}
       </div>
     </div>

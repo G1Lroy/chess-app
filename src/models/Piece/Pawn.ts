@@ -7,37 +7,33 @@ export class Pawn extends Piece {
     this.name = PieceNames.PAWN;
     this.icon = PieceIcons.PAWN;
   }
-  public canMove(target: Cell): boolean {
-    if (!super.canMove(target)) return false;
+  public canMove(targetCell: Cell): boolean {
+    if (!super.canMove(targetCell)) return false;
 
-    const deltaX = this.cell.x - target.x;
-    const deltaY = this.cell.y - target.y;
+    const diffX = this.cell.x - targetCell.x;
+    const diffY = this.cell.y - targetCell.y;
     const direction = this.color === Color.WHITE ? 1 : -1;
     const startingRow = this.color === Color.WHITE ? 6 : 1;
 
     // Проверка на первый ход - доступно 2 клетки
-    if (this.cell.y === startingRow && deltaY === direction * 2) {
+    if (this.cell.y === startingRow && diffY === direction * 2) {
       // Проверка на первый ход - если фигура заблокирована
       const nextCell = this.cell.board.getCell(this.cell.x, startingRow - direction);
       if (!nextCell.isEmpty()) return false;
 
-      return target.isEmpty() && deltaX === 0;
+      return targetCell.isEmpty() && diffX === 0;
     }
 
     // Проверка атаки
-    if ((deltaX === 1 || deltaX === -1) && deltaY === direction) {
-      return this.cell.isEnemy(target);
+    if ((diffX === 1 || diffX === -1) && diffY === direction) {
+      return this.cell.isEnemy(targetCell);
     }
 
     // Проверка обычного хода на 1 клетку
-    if (target.isEmpty() && deltaX === 0) {
-      return deltaY === direction;
+    if (targetCell.isEmpty() && diffX === 0) {
+      return diffY === direction;
     }
 
     return false;
   }
-  // public movePiece(target: Cell): void {
-  //   super.movePiece(target);
-  //   this.isFirstStep = false;
-  // }
 }

@@ -19,14 +19,14 @@ const CellComponent: FC<CellProps> = ({ clickHandler, cell, selected }) => {
                 ${selected ? "active" : ""}
                 `}
       >
-        { (
+        {
           <div
             className={`highlight 
                  ${!cell.piece && cell.availableToMove ? "empty" : ""}
                   ${cell.piece && cell.availableToMove ? "piece" : ""}
                   `}
           ></div>
-        )}
+        }
         {cell.piece?.icon}
       </div>
     </>

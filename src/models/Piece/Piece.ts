@@ -22,7 +22,6 @@ export enum PieceIcons {
   ROOK = "♜",
   BISHOP = "♝",
 }
-
 export abstract class Piece {
   public readonly color: Color;
   public cell: Cell;
@@ -42,5 +41,5 @@ export abstract class Piece {
     else if (targetCell.piece?.name === PieceNames.KING) return false;
     return true;
   }
-  // public movePiece(target: Cell) {}
+  
 }
