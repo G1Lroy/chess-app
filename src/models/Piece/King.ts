@@ -17,4 +17,3 @@ export class King extends Piece {
     return diffX <= 1 && diffY <= 1;
   }
 }
-// если таргер === possibleToAttack выходим

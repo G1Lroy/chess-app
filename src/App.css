@@ -46,12 +46,20 @@
     height: 20%;
     border-radius: 50%;
     background-color: #60c000be;
-    /* background-color: rgba(255, 255, 0, 0.81); */
-    /* box-shadow: inset 0px 0px 10px 5px #7f3ff68e; */
+
 }
 
 .highlight.piece {
-    box-shadow: inset 0px 0px 10px 5px #ff0000;
+    box-shadow: inset 0px 0px 4px 3px #9e0101;
+}
+
+
+.highlight.underAttack::after {
+    position: absolute;
+    top: 18px;
+    left: 19px;
+    content: "💥";
+    font-size: 13px;
 }
 
 
@@ -62,6 +70,7 @@
 .cell.dark {
     background: #d2694c;
 }
+
 
 
 .cell.black-piece {
@@ -77,7 +86,7 @@
 
 .cell.active {
     color: #7e3ff6;
-    text-shadow: 1px 2px rgb(81, 229, 245);
+    text-shadow: 1px 2px #51e5f5;
 
 }
 

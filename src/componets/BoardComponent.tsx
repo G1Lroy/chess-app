@@ -11,8 +11,8 @@ interface BoardProps {
 }
 
 const BoardComponent: FC<BoardProps> = ({ board, setBoard }) => {
-  
   const [selectedCell, setSelectedCell] = useState<Cell | null>(null);
+  const [helpers, setHelpers] = useState(true);
 
   const clickHandler = (cell: Cell) => {
     if (cell.piece) {
@@ -41,22 +41,32 @@ const BoardComponent: FC<BoardProps> = ({ board, setBoard }) => {
       }}
       className="board"
     >
+      <label
+        onClick={() => setHelpers(!helpers)}
+        style={{ cursor: "pointer", position: "fixed", top: "25px", left: "25px" }}
+        htmlFor="helpers"
+      >
+        Enable help
+        <input style={{ marginLeft: "5px" }} checked={helpers} name="helpers" type="checkbox"></input>
+      </label>
       {board.cells.map((row, rowIndex) => (
         <div key={rowIndex} className="row">
-          <span className="files">{rowIndex}</span>
+          <span className="files">{8 - rowIndex}</span>
           {row.map((cell, cellIndex) => (
             <CellComponent
               key={cellIndex}
               cell={cell}
               clickHandler={clickHandler}
               selected={selectedCell?.equals(cell.x, cell.y)}
+              selectedCell={selectedCell}
+              enableHelpers={helpers}
             />
           ))}
         </div>
       ))}
       <div className="ranks">
-        {rankCoordinates.map((rank, idx) => (
-          <span key={rank}>{idx}</span>
+        {rankCoordinates.map((rank) => (
+          <span key={rank}>{rank}</span>
         ))}
       </div>
     </div>

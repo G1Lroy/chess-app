@@ -7,7 +7,6 @@ export class Cell {
   public readonly color: number;
   public piece: Piece | null;
   public availableToMove: boolean;
-  public availableToPawnAttack: boolean;
   public board: Board;
 
   constructor(x: number, y: number, color: number, piece: Piece | null, board: Board) {
@@ -16,7 +15,6 @@ export class Cell {
     this.color = color;
     this.piece = piece;
     this.availableToMove = false;
-    this.availableToPawnAttack = false;
     this.board = board;
   }
   public equals(otherX: number, otherY: number): boolean {
@@ -88,9 +86,7 @@ export class Cell {
   // только пешка может атаковать клетки
   // на которые не ходит
   isEnemy(target: Cell): boolean {
-    // if (target.availableToPawnAttack) return true;
     if (!target.piece) return false;
-
     return this.piece?.color !== target.piece?.color;
   }
 }

@@ -34,6 +34,13 @@ export class Board {
     newBoard.cells = this.cells;
     return newBoard;
   }
+  private cloneForKing(): Board {
+    const newBoard = new Board();
+    newBoard.cells = this.cells;
+    newBoard.cellsAroundKing = this.cellsAroundKing;
+    newBoard.enemyPieces = this.enemyPieces;
+    return newBoard;
+  }
   public highlightCells(selectedCell: Cell | null): void {
     const isKing = selectedCell?.piece?.name === PieceNames.KING;
 
@@ -43,52 +50,27 @@ export class Board {
       for (let j = 0; j < row.length; j++) {
         const currentCell = row[j];
 
-        if (isKing && currentCell.piece && currentCell.piece?.color !== selectedCell.piece?.color) {
-          this.enemyPieces.push(currentCell.piece);
+        if (isKing) {
+          // ищем вражеские фигуры
+          this.getEnemyPieces(currentCell, selectedCell as Cell);
+          // ищем клетки вокруг короля
+          this.getCellAroundKing(currentCell, selectedCell as Cell);
         }
-        if (isKing && !currentCell.piece) {
-          const diffX = Math.abs(currentCell.x - selectedCell.x);
-          const diffY = Math.abs(currentCell.y - selectedCell.y);
 
-          if (diffX <= 1 && diffY <= 1) {
-            this.cellsAroundKing.push(currentCell);
-          }
-        }
         currentCell.availableToMove = !!selectedCell?.piece?.canMove(currentCell);
       }
     }
-
     // Запрещаем королю ходить на атакованые клетки
-    if (isKing) {
-      const enemyAttacksOnKing = this.getEnemyAttacksOnKing();
-      for (const cell of this.cellsAroundKing) {
-        if (enemyAttacksOnKing.has(cell)) {
-          cell.availableToMove = false;
-        }
-      }
-    }
-  }
-  public getEnemyAttacksOnKing(): Set<Cell> {
-    const enemyAttacks = new Set<Cell>();
-    for (const cell of this.cellsAroundKing) {
-      for (const piece of this.enemyPieces) {
-        if (piece.canMove(cell)) {
-          enemyAttacks.add(cell);
-        }
-      }
-    }
-    console.log(enemyAttacks);
-
-    return enemyAttacks;
+    if (isKing) this.cancelKingMoveOnCellUnderAttack(selectedCell?.piece?.color as Color);
   }
   public defaultPieceSetup(): void {
     new Pawn(Color.BLACK, this.getCell(3, 3));
     new King(Color.WHITE, this.getCell(3, 5));
     // set pawns
-    // for (let x = 0; x < 8; x++) {
-    //   new Pawn(Color.BLACK, this.getCell(x, 1));
-    //   new Pawn(Color.WHITE, this.getCell(x, 6));
-    // }
+    for (let x = 0; x < 8; x++) {
+      new Pawn(Color.BLACK, this.getCell(x, 1));
+      new Pawn(Color.WHITE, this.getCell(x, 6));
+    }
     // set rooks
     new Rook(Color.BLACK, this.getCell(0, 0));
     new Rook(Color.BLACK, this.getCell(7, 0));
@@ -112,8 +94,34 @@ export class Board {
     new King(Color.BLACK, this.getCell(4, 0));
     new King(Color.WHITE, this.getCell(4, 7));
   }
-  public isCellDark(x: number, y: number): boolean {
+  private isCellDark(x: number, y: number): boolean {
     return (x + y) % 2 !== 0;
+  }
+  private getEnemyPieces(currentCell: Cell, selectedCell: Cell): void {
+    if (currentCell.piece && currentCell.piece?.color !== selectedCell.piece?.color) {
+      this.enemyPieces.push(currentCell.piece);
+    }
+  }
+  private getCellAroundKing(currentCell: Cell, selectedCell: Cell) {
+    if (!currentCell.piece) {
+      const diffX = Math.abs(currentCell.x - selectedCell.x);
+      const diffY = Math.abs(currentCell.y - selectedCell.y);
+
+      if (diffX <= 1 && diffY <= 1) this.cellsAroundKing.push(currentCell);
+    }
+  }
+  private cancelKingMoveOnCellUnderAttack(currentColor: Color) {
+    
+    const newBoard = this.cloneForKing();
+
+    for (let cell of newBoard.cellsAroundKing) {
+      for (let piece of newBoard.enemyPieces) {
+        cell.piece = new Knight(currentColor, cell);
+        if (piece instanceof Pawn && piece.canMove(cell)) cell.availableToMove = false;
+        else if (piece.canMove(cell)) cell.availableToMove = false;
+        cell.piece = null;
+      }
+    }
   }
 }
 //  получаем все вражеские фигуры
