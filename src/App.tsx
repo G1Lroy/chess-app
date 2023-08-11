@@ -4,6 +4,7 @@ import { Board } from "./models/Board/Board";
 import { useEffect, useState } from "react";
 
 function App() {
+  
   const [board, setBoard] = useState(new Board());
 
   function restart() {

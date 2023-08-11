@@ -36,7 +36,7 @@ export class Board {
   }
   private cloneForKing(): Board {
     const newBoard = new Board();
-    newBoard.cells = this.cells;
+    // newBoard.cells = this.cells;
     newBoard.cellsAroundKing = this.cellsAroundKing;
     newBoard.enemyPieces = this.enemyPieces;
     return newBoard;
@@ -56,12 +56,13 @@ export class Board {
           // ищем клетки вокруг короля
           this.getCellAroundKing(currentCell, selectedCell as Cell);
         }
-
         currentCell.availableToMove = !!selectedCell?.piece?.canMove(currentCell);
+
+        currentCell.availableToAttack = false;
       }
     }
     // Запрещаем королю ходить на атакованые клетки
-    if (isKing) this.cancelKingMoveOnCellUnderAttack(selectedCell?.piece?.color as Color);
+    if (isKing) this.cancelKingMove(selectedCell?.piece?.color as Color);
   }
   public defaultPieceSetup(): void {
     new Pawn(Color.BLACK, this.getCell(3, 3));
@@ -102,7 +103,7 @@ export class Board {
       this.enemyPieces.push(currentCell.piece);
     }
   }
-  private getCellAroundKing(currentCell: Cell, selectedCell: Cell) {
+  private getCellAroundKing(currentCell: Cell, selectedCell: Cell): void {
     if (!currentCell.piece) {
       const diffX = Math.abs(currentCell.x - selectedCell.x);
       const diffY = Math.abs(currentCell.y - selectedCell.y);
@@ -110,15 +111,18 @@ export class Board {
       if (diffX <= 1 && diffY <= 1) this.cellsAroundKing.push(currentCell);
     }
   }
-  private cancelKingMoveOnCellUnderAttack(currentColor: Color) {
-    
+  private cancelKingMove(currentColor: Color): void {
     const newBoard = this.cloneForKing();
 
     for (let cell of newBoard.cellsAroundKing) {
       for (let piece of newBoard.enemyPieces) {
-        cell.piece = new Knight(currentColor, cell);
-        if (piece instanceof Pawn && piece.canMove(cell)) cell.availableToMove = false;
-        else if (piece.canMove(cell)) cell.availableToMove = false;
+        if (piece instanceof Pawn) {
+          cell.piece = new Knight(currentColor, cell);
+        }
+        if (piece.canMove(cell)) {
+          cell.availableToMove = false;
+          cell.availableToAttack = true;
+        }
         cell.piece = null;
       }
     }

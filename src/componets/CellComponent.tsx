@@ -1,7 +1,6 @@
 import React, { FC } from "react";
 import { Cell } from "../models/Cell/Cell";
-import { Piece, PieceNames } from "../models/Piece/Piece";
-import { King } from "../models/Piece/King";
+import { PieceNames } from "../models/Piece/Piece";
 
 interface CellProps {
   clickHandler: (cell: Cell) => void;
@@ -13,36 +12,27 @@ interface CellProps {
 
 const CellComponent: FC<CellProps> = ({ clickHandler, cell, selected, selectedCell, enableHelpers }) => {
   return (
-    <>
-      <div
-        onClick={() => clickHandler(cell)}
-        className={`cell 
+    <div
+      onClick={() => clickHandler(cell)}
+      className={`cell 
                 ${cell.color === 1 ? "dark" : "light"} 
                 ${cell.piece?.color === 1 ? "black-piece" : "light-piece"} 
-                ${selected ? "active" : null}
-                `}
-      >
-        {enableHelpers && (
-          <div
-            className={`highlight 
-                ${cell.piece && cell.availableToMove ? "piece" : null}
-                ${
-                  selectedCell?.piece?.name === PieceNames.KING &&
-                  !cell.piece &&
-                  selectedCell.piece.canMove(cell) &&
-                  !cell.availableToMove
-                    ? "underAttack"
-                    : null
-                } 
-                  `}
-          ></div>
+                ${selected ? "active" : ""}`}
+    >
+      {cell.availableToMove && cell.piece && <div hidden={!enableHelpers} className="highlight piece"></div>}
+      {!cell.piece && cell.availableToMove && <div className="highlight empty"></div>}
+
+      {selectedCell?.piece?.name === PieceNames.KING &&
+        cell.availableToAttack &&
+        selectedCell.piece?.canMove(cell) &&
+        !cell.piece && (
+          <div hidden={!enableHelpers} className="highlight underAttack">
+            💥
+          </div>
         )}
-        <div className={`highlight ${!cell.piece && cell.availableToMove ? "empty" : null}`}></div>
-        {cell.piece?.icon}
-      </div>
-    </>
+      {cell.piece?.icon}
+    </div>
   );
 };
 
-// =================================добавить функцию вкл\выкл подсказки
 export default CellComponent;

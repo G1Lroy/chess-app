@@ -54,12 +54,9 @@
 }
 
 
-.highlight.underAttack::after {
-    position: absolute;
-    top: 18px;
-    left: 19px;
-    content: "💥";
-    font-size: 13px;
+.highlight.underAttack {
+    padding: 16px;
+    font-size: 14px;
 }
 
 

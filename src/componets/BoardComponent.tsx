@@ -3,7 +3,6 @@ import { Cell } from "../models/Cell/Cell";
 import CellComponent from "./CellComponent";
 import { Board } from "../models/Board/Board";
 import { rankCoordinates } from "../helpers/rankCoordinates";
-import { Color, PieceNames } from "../models/Piece/Piece";
 
 interface BoardProps {
   board: Board;
@@ -12,13 +11,13 @@ interface BoardProps {
 
 const BoardComponent: FC<BoardProps> = ({ board, setBoard }) => {
   const [selectedCell, setSelectedCell] = useState<Cell | null>(null);
-  const [helpers, setHelpers] = useState(true);
+  const [helpers, setHelpers] = useState(false);
 
   const clickHandler = (cell: Cell) => {
     if (cell.piece) {
       setSelectedCell(cell);
     }
-    if (selectedCell && selectedCell !== cell && cell.availableToMove) {
+    if (cell.availableToMove && selectedCell && selectedCell !== cell) {
       selectedCell.movePiece(cell);
       setSelectedCell(null);
     }
@@ -43,12 +42,14 @@ const BoardComponent: FC<BoardProps> = ({ board, setBoard }) => {
     >
       <label
         onClick={() => setHelpers(!helpers)}
-        style={{ cursor: "pointer", position: "fixed", top: "25px", left: "25px" }}
+        style={{ cursor: "pointer", position: "absolute", top: "25px", left: "25px" }}
         htmlFor="helpers"
       >
         Enable help
         <input style={{ marginLeft: "5px" }} checked={helpers} name="helpers" type="checkbox"></input>
       </label>
+      <div className="legend"></div>
+
       {board.cells.map((row, rowIndex) => (
         <div key={rowIndex} className="row">
           <span className="files">{8 - rowIndex}</span>
