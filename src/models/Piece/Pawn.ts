@@ -36,4 +36,7 @@ export class Pawn extends Piece {
 
     return false;
   }
+  public getFullRange(targetCell: Cell) {
+    return false;
+  }
 }

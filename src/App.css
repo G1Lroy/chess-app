@@ -40,12 +40,12 @@
 }
 
 .highlight.empty {
-    top: 40%;
-    left: 40%;
-    width: 20%;
-    height: 20%;
+    top: 35%;
+    left: 35%;
+    width: 15px;
+    height: 15px;
     border-radius: 50%;
-    background-color: #60c000be;
+    background-color: #0000005f;
 
 }
 

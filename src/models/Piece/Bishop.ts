@@ -1,4 +1,5 @@
 import { Cell } from "../Cell/Cell";
+import { LongRangePieceMath } from "../Utils/LongRangePieceMath";
 
 import { Color, Piece, PieceIcons, PieceNames } from "./Piece";
 
@@ -10,7 +11,8 @@ export class Bishop extends Piece {
   }
   public canMove(targetCell: Cell): boolean {
     if (!super.canMove(targetCell)) return false;
-    if (this.cell.isEmptyDiagonal(targetCell)) return true;
+    if (LongRangePieceMath.isEmptyDiagonal(targetCell, this.cell.x, this.cell.y)) return true;
     return false;
   }
+
 }

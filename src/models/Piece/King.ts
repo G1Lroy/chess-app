@@ -16,4 +16,7 @@ export class King extends Piece {
 
     return diffX <= 1 && diffY <= 1;
   }
+  public getFullRange(targetCell: Cell) {
+    return false;
+  }
 }

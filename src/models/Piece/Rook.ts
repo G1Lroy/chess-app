@@ -1,4 +1,6 @@
 import { Cell } from "../Cell/Cell";
+import { LongRangePieceMath } from "../Utils/LongRangePieceMath";
+import { King } from "./King";
 
 import { Color, Piece, PieceIcons, PieceNames } from "./Piece";
 
@@ -10,8 +12,8 @@ export class Rook extends Piece {
   }
   public canMove(targetCell: Cell): boolean {
     if (!super.canMove(targetCell)) return false;
-    if (this.cell.isEmptyHorizontal(targetCell)) return true;
-    if (this.cell.isEmptyVetrical(targetCell)) return true;
+    if (LongRangePieceMath.isEmptyHorizontal(targetCell, this.cell.x, this.cell.y)) return true;
+    if (LongRangePieceMath.isEmptyVetrical(targetCell, this.cell.x, this.cell.y)) return true;
     return false;
   }
 }

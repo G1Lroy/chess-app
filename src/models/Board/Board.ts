@@ -3,70 +3,31 @@ import { Bishop } from "../Piece/Bishop";
 import { King } from "../Piece/King";
 import { Knight } from "../Piece/Knight";
 import { Pawn } from "../Piece/Pawn";
-import { Color, Piece, PieceNames } from "../Piece/Piece";
+import { Color } from "../Piece/Piece";
 import { Queen } from "../Piece/Queen";
 import { Rook } from "../Piece/Rook";
 
 export class Board {
-  cells: Cell[][] = [];
-
-  enemyPieces: Piece[] = [];
-  cellsAroundKing: Cell[] = [];
+  cellsGrid: Cell[][] = [];
 
   public constructBoard(): void {
     for (let x = 0; x < 8; x++) {
       const row: Cell[] = [];
       for (let y = 0; y < 8; y++) {
-        if (this.isCellDark(x, y)) {
+        if ((x + y) % 2 !== 0) {
           row.push(new Cell(y, x, Color.BLACK, null, this));
         } else {
           row.push(new Cell(y, x, Color.WHITE, null, this));
         }
       }
-      this.cells.push(row);
+      this.cellsGrid.push(row);
     }
-  }
-  public getCell(x: number, y: number) {
-    return this.cells[y][x];
-  }
-  public clone(): Board {
-    const newBoard = new Board();
-    newBoard.cells = this.cells;
-    return newBoard;
-  }
-  private cloneForKing(): Board {
-    const newBoard = new Board();
-    // newBoard.cells = this.cells;
-    newBoard.cellsAroundKing = this.cellsAroundKing;
-    newBoard.enemyPieces = this.enemyPieces;
-    return newBoard;
-  }
-  public highlightCells(selectedCell: Cell | null): void {
-    const isKing = selectedCell?.piece?.name === PieceNames.KING;
-
-    for (let i = 0; i < this.cells.length; i++) {
-      const row = this.cells[i];
-
-      for (let j = 0; j < row.length; j++) {
-        const currentCell = row[j];
-
-        if (isKing) {
-          // ищем вражеские фигуры
-          this.getEnemyPieces(currentCell, selectedCell as Cell);
-          // ищем клетки вокруг короля
-          this.getCellAroundKing(currentCell, selectedCell as Cell);
-        }
-        currentCell.availableToMove = !!selectedCell?.piece?.canMove(currentCell);
-
-        currentCell.availableToAttack = false;
-      }
-    }
-    // Запрещаем королю ходить на атакованые клетки
-    if (isKing) this.cancelKingMove(selectedCell?.piece?.color as Color);
   }
   public defaultPieceSetup(): void {
-    new Pawn(Color.BLACK, this.getCell(3, 3));
-    new King(Color.WHITE, this.getCell(3, 5));
+    new King(Color.BLACK, this.getCell(4, 4));
+    // new Rook(Color.WHITE, this.getCell(4, 7));
+    // new Rook(Color.BLACK, this.getCell(5, 5));
+    // new Queen(Color.WHITE, this.getCell(5, 7));
     // set pawns
     for (let x = 0; x < 8; x++) {
       new Pawn(Color.BLACK, this.getCell(x, 1));
@@ -95,40 +56,12 @@ export class Board {
     new King(Color.BLACK, this.getCell(4, 0));
     new King(Color.WHITE, this.getCell(4, 7));
   }
-  private isCellDark(x: number, y: number): boolean {
-    return (x + y) % 2 !== 0;
+  public getCell(x: number, y: number) {
+    return this.cellsGrid[y][x];
   }
-  private getEnemyPieces(currentCell: Cell, selectedCell: Cell): void {
-    if (currentCell.piece && currentCell.piece?.color !== selectedCell.piece?.color) {
-      this.enemyPieces.push(currentCell.piece);
-    }
-  }
-  private getCellAroundKing(currentCell: Cell, selectedCell: Cell): void {
-    if (!currentCell.piece) {
-      const diffX = Math.abs(currentCell.x - selectedCell.x);
-      const diffY = Math.abs(currentCell.y - selectedCell.y);
-
-      if (diffX <= 1 && diffY <= 1) this.cellsAroundKing.push(currentCell);
-    }
-  }
-  private cancelKingMove(currentColor: Color): void {
-    const newBoard = this.cloneForKing();
-
-    for (let cell of newBoard.cellsAroundKing) {
-      for (let piece of newBoard.enemyPieces) {
-        if (piece instanceof Pawn) {
-          cell.piece = new Knight(currentColor, cell);
-        }
-        if (piece.canMove(cell)) {
-          cell.availableToMove = false;
-          cell.availableToAttack = true;
-        }
-        cell.piece = null;
-      }
-    }
+  public clone(): Board {
+    const newBoard = new Board();
+    newBoard.cellsGrid = this.cellsGrid;
+    return newBoard;
   }
 }
-//  получаем все вражеские фигуры
-// получаем доступные ходы для каждой фигуры
-// **для пешки проверяем на возможность атаки + хода
-// в методе canMove проверяем что таргет(короля) не совпадает ни с одним значением из списка

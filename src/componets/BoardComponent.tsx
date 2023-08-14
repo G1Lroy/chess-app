@@ -2,24 +2,41 @@ import React, { FC, useEffect, useState } from "react";
 import { Cell } from "../models/Cell/Cell";
 import CellComponent from "./CellComponent";
 import { Board } from "../models/Board/Board";
-import { rankCoordinates } from "../helpers/rankCoordinates";
+import { rankCoordinates } from "../coordinatesNames/rankCoordinates";
+import { BoardRenderer } from "../models/Board/BoardRenderer";
+import { KingMovesChecker } from "../models/Utils/KingMovesChecker";
 
 interface BoardProps {
   board: Board;
   setBoard: (board: Board) => void;
+  boardRenderer: BoardRenderer;
+  passTurn: () => void;
+  currentPlayer: number;
+  helpers: boolean;
 }
 
-const BoardComponent: FC<BoardProps> = ({ board, setBoard }) => {
+const BoardComponent: FC<BoardProps> = ({
+  board,
+  setBoard,
+  boardRenderer,
+  passTurn,
+  currentPlayer,
+  helpers,
+}) => {
   const [selectedCell, setSelectedCell] = useState<Cell | null>(null);
-  const [helpers, setHelpers] = useState(false);
 
   const clickHandler = (cell: Cell) => {
+    // if (cell.piece && cell.piece.color === currentPlayer) {
+    //   setSelectedCell(cell);
+    // }
     if (cell.piece) {
       setSelectedCell(cell);
     }
     if (cell.availableToMove && selectedCell && selectedCell !== cell) {
       selectedCell.movePiece(cell);
       setSelectedCell(null);
+      // passTurn();
+
     }
   };
 
@@ -28,7 +45,8 @@ const BoardComponent: FC<BoardProps> = ({ board, setBoard }) => {
   }, [selectedCell]);
 
   const update = () => {
-    board.highlightCells(selectedCell);
+    boardRenderer.renderCells(selectedCell, board);
+    
     setBoard(board.clone());
   };
 
@@ -40,17 +58,7 @@ const BoardComponent: FC<BoardProps> = ({ board, setBoard }) => {
       }}
       className="board"
     >
-      <label
-        onClick={() => setHelpers(!helpers)}
-        style={{ cursor: "pointer", position: "absolute", top: "25px", left: "25px" }}
-        htmlFor="helpers"
-      >
-        Enable help
-        <input style={{ marginLeft: "5px" }} checked={helpers} name="helpers" type="checkbox"></input>
-      </label>
-      <div className="legend"></div>
-
-      {board.cells.map((row, rowIndex) => (
+      {board.cellsGrid.map((row, rowIndex) => (
         <div key={rowIndex} className="row">
           <span className="files">{8 - rowIndex}</span>
           {row.map((cell, cellIndex) => (

@@ -27,6 +27,7 @@ export abstract class Piece {
   public cell: Cell;
   public name: PieceNames;
   public icon: string;
+  public fakeCreated?: boolean;
 
   constructor(color: Color, cell: Cell) {
     this.color = color;
@@ -38,8 +39,7 @@ export abstract class Piece {
 
   public canMove(targetCell: Cell): boolean {
     if (this.color === targetCell.piece?.color) return false;
-    else if (targetCell.piece?.name === PieceNames.KING) return false;
+    if (targetCell.piece?.name === PieceNames.KING) return false;
     return true;
   }
-  
 }
