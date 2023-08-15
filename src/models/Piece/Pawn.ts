@@ -1,4 +1,5 @@
 import { Cell } from "../Cell/Cell";
+import { King } from "./King";
 import { Color, Piece, PieceIcons, PieceNames } from "./Piece";
 
 export class Pawn extends Piece {
@@ -15,8 +16,9 @@ export class Pawn extends Piece {
     const direction = this.color === Color.WHITE ? 1 : -1;
     const startingRow = this.color === Color.WHITE ? 6 : 1;
 
+
     // Проверка на первый ход - доступно 2 клетки
-    if (this.cell.y === startingRow && diffY === direction * 2) {
+    if ((this.cell.y === startingRow && diffY === direction * 2) ) {
       // Проверка на первый ход - если фигура заблокирована
       const nextCell = this.cell.board.getCell(this.cell.x, startingRow - direction);
       if (!nextCell.isEmpty()) return false;
@@ -34,9 +36,6 @@ export class Pawn extends Piece {
       return diffY === direction;
     }
 
-    return false;
-  }
-  public getFullRange(targetCell: Cell) {
     return false;
   }
 }

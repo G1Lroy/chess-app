@@ -25,36 +25,32 @@ export class Board {
   }
   public defaultPieceSetup(): void {
     new King(Color.BLACK, this.getCell(4, 4));
-    // new Rook(Color.WHITE, this.getCell(4, 7));
-    // new Rook(Color.BLACK, this.getCell(5, 5));
-    // new Queen(Color.WHITE, this.getCell(5, 7));
-    // set pawns
-    for (let x = 0; x < 8; x++) {
-      new Pawn(Color.BLACK, this.getCell(x, 1));
-      new Pawn(Color.WHITE, this.getCell(x, 6));
-    }
-    // set rooks
-    new Rook(Color.BLACK, this.getCell(0, 0));
-    new Rook(Color.BLACK, this.getCell(7, 0));
     new Rook(Color.WHITE, this.getCell(0, 7));
-    new Rook(Color.WHITE, this.getCell(7, 7));
+    new Rook(Color.BLACK, this.getCell(6, 6));
+    new Rook(Color.BLACK, this.getCell(5, 6));
+    new Queen(Color.WHITE, this.getCell(7, 7));
+    new Bishop(Color.WHITE, this.getCell(3, 3));
+    // for (let x = 0; x < 8; x++) {
+    //   new Pawn(Color.BLACK, this.getCell(x, 1));
+    //   new Pawn(Color.WHITE, this.getCell(x, 6));
+    // }
+    // new Rook(Color.BLACK, this.getCell(0, 0));
+    // new Rook(Color.BLACK, this.getCell(7, 0));
+    // new Rook(Color.WHITE, this.getCell(0, 7));
+    // new Rook(Color.WHITE, this.getCell(7, 7));
 
-    // // set knight
-    new Knight(Color.BLACK, this.getCell(1, 0));
-    new Knight(Color.BLACK, this.getCell(6, 0));
-    new Knight(Color.WHITE, this.getCell(1, 7));
-    new Knight(Color.WHITE, this.getCell(6, 7));
-    // //set bishops
-    new Bishop(Color.BLACK, this.getCell(2, 0));
-    new Bishop(Color.BLACK, this.getCell(5, 0));
-    new Bishop(Color.WHITE, this.getCell(2, 7));
-    new Bishop(Color.WHITE, this.getCell(5, 7));
-    // //set queens
-    new Queen(Color.BLACK, this.getCell(3, 0));
-    new Queen(Color.WHITE, this.getCell(3, 7));
-    // // set kings
-    new King(Color.BLACK, this.getCell(4, 0));
-    new King(Color.WHITE, this.getCell(4, 7));
+    // new Knight(Color.BLACK, this.getCell(1, 0));
+    // new Knight(Color.BLACK, this.getCell(6, 0));
+    // new Knight(Color.WHITE, this.getCell(1, 7));
+    // new Knight(Color.WHITE, this.getCell(6, 7));
+    // new Bishop(Color.BLACK, this.getCell(2, 0));
+    // new Bishop(Color.BLACK, this.getCell(5, 0));
+    // new Bishop(Color.WHITE, this.getCell(2, 7));
+    // new Bishop(Color.WHITE, this.getCell(5, 7));
+    // new Queen(Color.BLACK, this.getCell(3, 0));
+    // new Queen(Color.WHITE, this.getCell(3, 7));
+    // new King(Color.BLACK, this.getCell(4, 0));
+    // new King(Color.WHITE, this.getCell(4, 7));
   }
   public getCell(x: number, y: number) {
     return this.cellsGrid[y][x];
