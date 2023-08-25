@@ -24,12 +24,12 @@ export class Board {
     }
   }
   public defaultPieceSetup(): void {
-    new King(Color.BLACK, this.getCell(4, 4));
+    new King(Color.BLACK, this.getCell(6, 5));
     new Rook(Color.WHITE, this.getCell(0, 7));
+    // new Rook(Color.BLACK, this.getCell(7, 6));
     new Rook(Color.BLACK, this.getCell(6, 6));
-    new Rook(Color.BLACK, this.getCell(5, 6));
-    new Queen(Color.WHITE, this.getCell(7, 7));
-    new Bishop(Color.WHITE, this.getCell(3, 3));
+    new Queen(Color.WHITE, this.getCell(6, 7));
+    // new Bishop(Color.WHITE, this.getCell(3, 3));
     // for (let x = 0; x < 8; x++) {
     //   new Pawn(Color.BLACK, this.getCell(x, 1));
     //   new Pawn(Color.WHITE, this.getCell(x, 6));
