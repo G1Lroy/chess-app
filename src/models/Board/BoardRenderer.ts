@@ -1,10 +1,11 @@
 import { Cell } from "../Cell/Cell";
+import { King } from "../Piece/King";
 import { Color, PieceNames } from "../Piece/Piece";
 import { KingMovesChecker } from "../Utils/KingMovesChecker";
 import { Board } from "./Board";
 
 export class BoardRenderer {
-  public renderCells(selectedCell: Cell | null, board: Board): void {
+  public renderCells(selectedCell: Cell | null, board: Board) {
     const isKing = selectedCell?.piece?.name === PieceNames.KING;
     const kingUtils = isKing ? new KingMovesChecker() : null;
 
@@ -20,12 +21,15 @@ export class BoardRenderer {
           // ищем клетки вокруг короля
           kingUtils!.getCellAroundKing(currentCell, selectedCell as Cell);
         }
+
         currentCell.availableToMove = !!selectedCell?.piece?.canMove(currentCell);
 
         currentCell.availableToAttack = false;
       }
     }
-    if (isKing) kingUtils!.cancelKingMove(selectedCell?.piece?.color as Color);
     // Запрещаем королю ходить на атакованые клетки
+    if (isKing) kingUtils!.cancelKingMove(selectedCell?.piece?.color as Color);
+    
+   
   }
 }

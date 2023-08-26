@@ -26,18 +26,17 @@ export class KingMovesChecker {
     if (diffX <= 1 && diffY <= 1 && (!currentCell.piece || currentCell.piece instanceof King))
       this.cellsAroundKing.push(currentCell);
   }
-  // логика проверок следующая:
-  // если вражеская фигура может походить на клетку вокрух короля
-  // тогда запрещаем королю на нее ходить
-  /*если фражеская фигура пешка:
+  public cancelKingMove(currentColor: Color): void {
+    // логика проверок следующая:
+    // если вражеская фигура может походить на клетку вокрух короля
+    // тогда запрещаем королю на нее ходить
+    /*если фражеская фигура пешка:
     тогда создается фейковая вигура на клетке на которую потенциально может
     походить пешка, после проверок и запрета королю ходить, фейковая фигура удаляется  */
-  //  если король под боем дальнобойно финуры, то нужно запретить королю ходить по атакуемой оси
-  //  для этого в метод getCellBehindKing передаем атакующую фигуру
-  public cancelKingMove(currentColor: Color): void {
+    //  если король под боем дальнобойно финуры, то нужно запретить королю ходить по атакуемой оси
+    //  для этого в метод getCellBehindKing передаем атакующую фигуру
     for (let cell of this.cellsAroundKing) {
       for (let piece of this.enemyPieces) {
-        
         if (piece instanceof Pawn && cell.piece?.name !== PieceNames.KING) {
           cell.piece = new Knight(currentColor, cell);
           cell.piece.fakeCreated = true;
@@ -59,7 +58,6 @@ export class KingMovesChecker {
     }
   }
   public getCellBehindKing(attackerPiece: Piece): Cell | void {
-
     const king = this.king;
     if (!king) return;
 
@@ -139,15 +137,15 @@ export class KingMovesChecker {
 
     const result = this.isCellOnBoard(x as number, y as number);
 
-    return result && x && y ? { x, y } : null;
+    return result && x !== undefined && y !== undefined ? { x, y } : null;
   }
   private isCellOnBoard(x: number, y: number): boolean {
     return x >= 0 && x <= 7 && y >= 0 && y <= 7;
   }
-  private isKingNext(x: number, y: number) {
+  private isKingNext(x: number, y: number): boolean {
     return this.king!.board.getCell(x, y).piece instanceof King;
   }
-  private isEmptyNext(x: number, y: number) {
+  private isEmptyNext(x: number, y: number): boolean {
     return this.king!.board.getCell(x, y).isEmpty();
   }
 }

@@ -27,12 +27,8 @@ export class Cell {
     this.piece.cell = this;
   }
   public movePiece(target: Cell) {
-    if (this.piece && this.piece.canMove(target) && target.piece?.name !== PieceNames.KING) {
-      target.setPiece(this.piece);
-      this.piece = null;
-    } else {
-      console.log("cant beat KING");
-    }
+    target.setPiece(this.piece as Piece);
+    this.piece = null;
   }
   public isEmpty(): boolean {
     return this.piece === null;

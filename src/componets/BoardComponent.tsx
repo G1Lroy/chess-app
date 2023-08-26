@@ -4,7 +4,7 @@ import CellComponent from "./CellComponent";
 import { Board } from "../models/Board/Board";
 import { rankCoordinates } from "../coordinatesNames/rankCoordinates";
 import { BoardRenderer } from "../models/Board/BoardRenderer";
-import { KingMovesChecker } from "../models/Utils/KingMovesChecker";
+import { Color, PieceNames } from "../models/Piece/Piece";
 
 interface BoardProps {
   board: Board;
@@ -13,6 +13,8 @@ interface BoardProps {
   passTurn: () => void;
   currentPlayer: number;
   helpers: boolean;
+  checkGameCondition: () => any;
+  check: Color | null;
 }
 
 const BoardComponent: FC<BoardProps> = ({
@@ -22,21 +24,23 @@ const BoardComponent: FC<BoardProps> = ({
   passTurn,
   currentPlayer,
   helpers,
+  checkGameCondition,
+  check,
 }) => {
   const [selectedCell, setSelectedCell] = useState<Cell | null>(null);
 
   const clickHandler = (cell: Cell) => {
-    // if (cell.piece && cell.piece.color === currentPlayer) {
-    //   setSelectedCell(cell);
-    // }
-    if (cell.piece) {
-      setSelectedCell(cell);
+    if (cell.piece && currentPlayer === cell?.piece?.color) {
+      if (check !== null && cell.piece?.name === PieceNames.KING) setSelectedCell(cell);
+      else if (check === null) setSelectedCell(cell);
     }
-    if (cell.availableToMove && selectedCell && selectedCell !== cell) {
-      selectedCell.movePiece(cell);
-      setSelectedCell(null);
-      // passTurn();
 
+    if (cell.availableToMove && selectedCell !== cell) {
+      if (cell.piece?.name === PieceNames.KING) return;
+      selectedCell?.movePiece(cell);
+      setSelectedCell(null);
+      checkGameCondition();
+      passTurn();
     }
   };
 
@@ -46,7 +50,7 @@ const BoardComponent: FC<BoardProps> = ({
 
   const update = () => {
     boardRenderer.renderCells(selectedCell, board);
-    
+
     setBoard(board.clone());
   };
 
@@ -69,6 +73,7 @@ const BoardComponent: FC<BoardProps> = ({
               selected={selectedCell?.equals(cell.x, cell.y)}
               selectedCell={selectedCell}
               enableHelpers={helpers}
+              check={check}
             />
           ))}
         </div>
