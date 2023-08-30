@@ -1,16 +1,16 @@
 import { Board } from "../Board/Board";
-import { Piece, PieceNames } from "../Piece/Piece";
+import { Color, Piece, PieceNames } from "../Piece/Piece";
 
 export class Cell {
   public readonly x: number;
   public readonly y: number;
-  public readonly color: number;
+  public readonly color: Color;
   public piece: Piece | null;
   public availableToMove: boolean;
   public availableToAttack: boolean;
   public board: Board;
 
-  constructor(x: number, y: number, color: number, piece: Piece | null, board: Board) {
+  constructor(x: number, y: number, color: Color, piece: Piece | null, board: Board) {
     this.x = x;
     this.y = y;
     this.color = color;

@@ -1,8 +1,8 @@
 import { Cell } from "../Cell/Cell";
 
 export enum Color {
-  WHITE,
-  BLACK,
+  WHITE = "WHITE",
+  BLACK = "BLACK",
 }
 export enum PieceNames {
   PIECE = "PIECE",

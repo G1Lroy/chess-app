@@ -6,6 +6,7 @@ import { Pawn } from "../Piece/Pawn";
 import { Color } from "../Piece/Piece";
 import { Queen } from "../Piece/Queen";
 import { Rook } from "../Piece/Rook";
+import _ from "lodash";
 
 export class Board {
   cellsGrid: Cell[][] = [];
@@ -24,7 +25,7 @@ export class Board {
     }
   }
   public defaultPieceSetup(): void {
-    // new King(Color.BLACK, this.getCell(1, 5));
+    // new Pawn(Color.BLACK, this.getCell(4, 5));
     // new Rook(Color.WHITE, this.getCell(6, 7));
     // new Rook(Color.BLACK, this.getCell(7, 6));
     // new Rook(Color.BLACK, this.getCell(6, 6));
@@ -59,6 +60,11 @@ export class Board {
   public clone(): Board {
     const newBoard = new Board();
     newBoard.cellsGrid = this.cellsGrid;
+    return newBoard;
+  }
+  public cloneDeep(): Board {
+    const newBoard = new Board();
+    newBoard.cellsGrid = _.cloneDeep(this.cellsGrid);
     return newBoard;
   }
 }

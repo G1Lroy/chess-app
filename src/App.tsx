@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { BoardRenderer } from "./models/Board/BoardRenderer";
 import { Color } from "./models/Piece/Piece";
 import GameInformation from "./componets/GameInformation";
-import { GameCondition } from "./models/Game/GameCondition";
+import { GameStateCheck } from "./models/Game/GameStateCheck";
 
 function App() {
   const [board, setBoard] = useState(new Board());
@@ -13,7 +13,7 @@ function App() {
   const [helpers, setHelpers] = useState(true);
   const [check, setCheck] = useState<Color | null>(null);
   const boardRenderer = new BoardRenderer();
-  const gameCondition = new GameCondition();
+  const gameStateCheck = new GameStateCheck();
 
   function restart() {
     const newBoard = new Board();
@@ -21,17 +21,14 @@ function App() {
     newBoard.defaultPieceSetup();
     setBoard(newBoard);
     setCurrentPlayer(Color.WHITE);
+    setCheck(null);
   }
   useEffect(() => {
     restart();
   }, []);
 
-  const passTurn = () => {
-    setCurrentPlayer(currerntPlayer === Color.WHITE ? Color.BLACK : Color.WHITE);
-  };
-  const checkGameCondition = () => {
-    setCheck(gameCondition.witchKingOnCheck(board, currerntPlayer));
-  };
+  const passTurn = () => setCurrentPlayer(currerntPlayer === Color.WHITE ? Color.BLACK : Color.WHITE);
+  const checkGameCondition = () => setCheck(gameStateCheck.getColorInCheck(board, currerntPlayer));
 
   return (
     <div className="App">
@@ -44,6 +41,7 @@ function App() {
         helpers={helpers}
         checkGameCondition={checkGameCondition}
         check={check}
+        gameStateCheck={gameStateCheck}
       />
       <GameInformation
         restart={restart}

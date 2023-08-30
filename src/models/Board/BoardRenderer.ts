@@ -1,5 +1,4 @@
 import { Cell } from "../Cell/Cell";
-import { King } from "../Piece/King";
 import { Color, PieceNames } from "../Piece/Piece";
 import { KingMovesChecker } from "../Utils/KingMovesChecker";
 import { Board } from "./Board";
@@ -29,7 +28,5 @@ export class BoardRenderer {
     }
     // Запрещаем королю ходить на атакованые клетки
     if (isKing) kingUtils!.cancelKingMove(selectedCell?.piece?.color as Color);
-    
-   
   }
 }

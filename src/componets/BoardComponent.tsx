@@ -5,16 +5,18 @@ import { Board } from "../models/Board/Board";
 import { rankCoordinates } from "../coordinatesNames/rankCoordinates";
 import { BoardRenderer } from "../models/Board/BoardRenderer";
 import { Color, PieceNames } from "../models/Piece/Piece";
+import { GameStateCheck } from "../models/Game/GameStateCheck";
 
 interface BoardProps {
   board: Board;
   setBoard: (board: Board) => void;
   boardRenderer: BoardRenderer;
   passTurn: () => void;
-  currentPlayer: number;
+  currentPlayer: Color;
   helpers: boolean;
   checkGameCondition: () => any;
   check: Color | null;
+  gameStateCheck: GameStateCheck;
 }
 
 const BoardComponent: FC<BoardProps> = ({
@@ -26,21 +28,39 @@ const BoardComponent: FC<BoardProps> = ({
   helpers,
   checkGameCondition,
   check,
+  gameStateCheck,
 }) => {
   const [selectedCell, setSelectedCell] = useState<Cell | null>(null);
 
   const clickHandler = (cell: Cell) => {
     if (cell.piece && currentPlayer === cell?.piece?.color) {
-      if (check !== null && cell.piece?.name === PieceNames.KING) setSelectedCell(cell);
-      else if (check === null) setSelectedCell(cell);
+      setSelectedCell(cell);
     }
-
     if (cell.availableToMove && selectedCell !== cell) {
       if (cell.piece?.name === PieceNames.KING) return;
-      selectedCell?.movePiece(cell);
-      setSelectedCell(null);
-      checkGameCondition();
-      passTurn();
+      const oppositeColor = currentPlayer == Color.BLACK ? Color.WHITE : Color.BLACK;
+      const isCheckOnClone = gameStateCheck.isCheckOnClone(selectedCell as Cell, board, cell, oppositeColor);
+      if (!check) {
+        if (isCheckOnClone) {
+          console.log("invalid move, KING under attack");
+          return;
+        } else {
+          selectedCell?.movePiece(cell);
+          checkGameCondition();
+          passTurn();
+          setSelectedCell(null);
+        }
+      } else {
+        if (isCheckOnClone) {
+          console.log("protect your king");
+          return;
+        } else {
+          selectedCell?.movePiece(cell);
+          checkGameCondition();
+          passTurn();
+          setSelectedCell(null);
+        }
+      }
     }
   };
 
@@ -50,7 +70,6 @@ const BoardComponent: FC<BoardProps> = ({
 
   const update = () => {
     boardRenderer.renderCells(selectedCell, board);
-
     setBoard(board.clone());
   };
 

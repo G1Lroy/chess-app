@@ -2,7 +2,7 @@ import React, { FC, useState } from "react";
 import { Color } from "../models/Piece/Piece";
 
 interface GameInformationProps {
-  currentPlayer: number;
+  currentPlayer: Color;
   setHelpers: (helpers: boolean) => void;
   restart: () => void;
   helpers: boolean;
@@ -38,7 +38,7 @@ const GameInformation: FC<GameInformationProps> = ({
         {currentPlayer === Color.WHITE ? "White turn" : "Black turn"}
       </div>
       <button onClick={() => restart()}>RESET GAME</button>
-      <div hidden={check === null}>{check === 0 ? "White check" : "Black check"} </div>
+      <div hidden={check === null}>{check === Color.WHITE ? "White check" : "Black check"} </div>
     </div>
   );
 };

@@ -23,8 +23,8 @@ const CellComponent: FC<CellProps> = ({
     <div
       onClick={() => clickHandler(cell)}
       className={`cell 
-                ${cell.color === 1 ? "dark" : "light"} 
-                ${cell.piece?.color === 1 ? "black-piece" : "light-piece"} 
+                ${cell.color === Color.BLACK ? "dark" : "light"} 
+                ${cell.piece?.color === Color.BLACK ? "black-piece" : "light-piece"} 
                 ${selected ? "active" : ""}`}
     >
       {cell.piece?.name === PieceNames.KING && cell.piece.color === check && (
