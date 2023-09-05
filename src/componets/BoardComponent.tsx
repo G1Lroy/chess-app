@@ -6,6 +6,8 @@ import { rankCoordinates } from "../coordinatesNames/rankCoordinates";
 import { BoardRenderer } from "../models/Board/BoardRenderer";
 import { Color, PieceNames } from "../models/Piece/Piece";
 import { GameStateCheck } from "../models/Game/GameStateCheck";
+import { GameStateCheckMate } from "../models/Game/GameStateCheckMate";
+import { opposite } from "../helpers/getOppositeColor";
 
 interface BoardProps {
   board: Board;
@@ -14,9 +16,10 @@ interface BoardProps {
   passTurn: () => void;
   currentPlayer: Color;
   helpers: boolean;
-  checkGameCondition: () => any;
-  check: Color | null;
+  checkGameCondition: () => void;
+  colorInCheck: Color | null;
   gameStateCheck: GameStateCheck;
+  validateCheckMate: () => void;
 }
 
 const BoardComponent: FC<BoardProps> = ({
@@ -27,40 +30,17 @@ const BoardComponent: FC<BoardProps> = ({
   currentPlayer,
   helpers,
   checkGameCondition,
-  check,
+  colorInCheck,
   gameStateCheck,
+  validateCheckMate,
 }) => {
   const [selectedCell, setSelectedCell] = useState<Cell | null>(null);
 
   const clickHandler = (cell: Cell) => {
-    if (cell.piece && currentPlayer === cell?.piece?.color) {
-      setSelectedCell(cell);
-    }
+    if (currentPlayer === cell?.piece?.color) setSelectedCell(cell);
     if (cell.availableToMove && selectedCell !== cell) {
       if (cell.piece?.name === PieceNames.KING) return;
-      const oppositeColor = currentPlayer == Color.BLACK ? Color.WHITE : Color.BLACK;
-      const isCheckOnClone = gameStateCheck.isCheckOnClone(selectedCell as Cell, board, cell, oppositeColor);
-      if (!check) {
-        if (isCheckOnClone) {
-          console.log("invalid move, KING under attack");
-          return;
-        } else {
-          selectedCell?.movePiece(cell);
-          checkGameCondition();
-          passTurn();
-          setSelectedCell(null);
-        }
-      } else {
-        if (isCheckOnClone) {
-          console.log("protect your king");
-          return;
-        } else {
-          selectedCell?.movePiece(cell);
-          checkGameCondition();
-          passTurn();
-          setSelectedCell(null);
-        }
-      }
+      validateCheck(cell);
     }
   };
 
@@ -69,8 +49,26 @@ const BoardComponent: FC<BoardProps> = ({
   }, [selectedCell]);
 
   const update = () => {
-    boardRenderer.renderCells(selectedCell, board);
+    boardRenderer.renderCells(selectedCell, board, currentPlayer);
     setBoard(board.clone());
+  };
+  const validateCheck = (cell: Cell) => {
+    const isCheckOnClone = gameStateCheck.isCheckOnClone(
+      selectedCell as Cell,
+      board,
+      cell,
+      currentPlayer,
+      opposite(currentPlayer)
+    );
+    if (isCheckOnClone) {
+      const message = colorInCheck ? "protect your king" : "invalid move, KING must be protected";
+      console.log(message);
+    } else {
+      selectedCell?.movePiece(cell);
+      checkGameCondition();
+      passTurn();
+      setSelectedCell(null);
+    }
   };
 
   return (
@@ -92,7 +90,7 @@ const BoardComponent: FC<BoardProps> = ({
               selected={selectedCell?.equals(cell.x, cell.y)}
               selectedCell={selectedCell}
               enableHelpers={helpers}
-              check={check}
+              colorInCheck={colorInCheck}
             />
           ))}
         </div>
@@ -102,6 +100,7 @@ const BoardComponent: FC<BoardProps> = ({
           <span key={rank}>{rank}</span>
         ))}
       </div>
+      <div>{}</div>
     </div>
   );
 };

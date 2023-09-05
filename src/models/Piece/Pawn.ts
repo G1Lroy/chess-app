@@ -16,9 +16,8 @@ export class Pawn extends Piece {
     const direction = this.color === Color.WHITE ? 1 : -1;
     const startingRow = this.color === Color.WHITE ? 6 : 1;
 
-
     // Проверка на первый ход - доступно 2 клетки
-    if ((this.cell.y === startingRow && diffY === direction * 2) ) {
+    if (this.cell.y === startingRow && diffY === direction * 2) {
       // Проверка на первый ход - если фигура заблокирована
       const nextCell = this.cell.board.getCell(this.cell.x, startingRow - direction);
       if (!nextCell.isEmpty()) return false;

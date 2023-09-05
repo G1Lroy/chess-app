@@ -3,17 +3,21 @@ import BoardComponent from "./componets/BoardComponent";
 import { Board } from "./models/Board/Board";
 import { useEffect, useState } from "react";
 import { BoardRenderer } from "./models/Board/BoardRenderer";
-import { Color } from "./models/Piece/Piece";
 import GameInformation from "./componets/GameInformation";
 import { GameStateCheck } from "./models/Game/GameStateCheck";
+import { GameStateCheckMate } from "./models/Game/GameStateCheckMate";
+import { Color } from "./models/Piece/Piece";
+import { opposite } from "./helpers/getOppositeColor";
 
 function App() {
   const [board, setBoard] = useState(new Board());
-  const [currerntPlayer, setCurrentPlayer] = useState(Color.WHITE);
+  const [currentPlayer, setCurrentPlayer] = useState(Color.WHITE);
   const [helpers, setHelpers] = useState(true);
-  const [check, setCheck] = useState<Color | null>(null);
+  const [colorInCheck, setColorInCheck] = useState<Color | null>(null);
+  const [checkMateColor, setCheckMateColor] = useState<Color | null>(null);
   const boardRenderer = new BoardRenderer();
   const gameStateCheck = new GameStateCheck();
+  const gameStateCheckMate = new GameStateCheckMate();
 
   function restart() {
     const newBoard = new Board();
@@ -21,40 +25,56 @@ function App() {
     newBoard.defaultPieceSetup();
     setBoard(newBoard);
     setCurrentPlayer(Color.WHITE);
-    setCheck(null);
+    setColorInCheck(null);
+    setCheckMateColor(null);
   }
   useEffect(() => {
     restart();
   }, []);
 
-  const passTurn = () => setCurrentPlayer(currerntPlayer === Color.WHITE ? Color.BLACK : Color.WHITE);
-  const checkGameCondition = () => setCheck(gameStateCheck.getColorInCheck(board, currerntPlayer));
+  const passTurn = () => {
+    setCurrentPlayer(opposite(currentPlayer));
+  };
+  const checkGameCondition = () => {
+    setColorInCheck(gameStateCheck.getColorInCheck(board, currentPlayer, opposite(currentPlayer)));
+  };
+  const validateCheckMate = () => {
+    setCheckMateColor(gameStateCheckMate.isCheckMate(board, currentPlayer, opposite(currentPlayer)));
+  };
 
+  useEffect(() => {
+    if (colorInCheck) {
+      validateCheckMate();
+    }
+  }, [currentPlayer]);
   return (
     <div className="App">
       <BoardComponent
-        currentPlayer={currerntPlayer}
+        currentPlayer={currentPlayer}
         passTurn={passTurn}
         board={board}
         setBoard={setBoard}
         boardRenderer={boardRenderer}
         helpers={helpers}
         checkGameCondition={checkGameCondition}
-        check={check}
+        colorInCheck={colorInCheck}
         gameStateCheck={gameStateCheck}
+        validateCheckMate={validateCheckMate}
       />
       <GameInformation
         restart={restart}
         setHelpers={setHelpers}
         helpers={helpers}
-        currentPlayer={currerntPlayer}
-        check={check}
+        currentPlayer={currentPlayer}
+        colorInCheck={colorInCheck}
+        checkMateColor={checkMateColor}
       />
     </div>
   );
 }
 
 export default App;
-
+// добавить метод найти короля
+// добавить метод найти фигуры по цвету
 // добавить шейк всех вигур перед игрой
 // добавить возможность стартовать и FEN нотации

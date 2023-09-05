@@ -1,6 +1,6 @@
 import React, { FC } from "react";
 import { Cell } from "../models/Cell/Cell";
-import { Color, PieceNames } from "../models/Piece/Piece";
+import {  Color, PieceNames } from "../models/Piece/Piece";
 
 interface CellProps {
   clickHandler: (cell: Cell) => void;
@@ -8,7 +8,7 @@ interface CellProps {
   selected: boolean | undefined;
   selectedCell: Cell | null;
   enableHelpers: boolean;
-  check: Color | null;
+  colorInCheck: Color | null;
 }
 
 const CellComponent: FC<CellProps> = ({
@@ -17,7 +17,7 @@ const CellComponent: FC<CellProps> = ({
   selected,
   selectedCell,
   enableHelpers,
-  check,
+  colorInCheck,
 }) => {
   return (
     <div
@@ -27,7 +27,7 @@ const CellComponent: FC<CellProps> = ({
                 ${cell.piece?.color === Color.BLACK ? "black-piece" : "light-piece"} 
                 ${selected ? "active" : ""}`}
     >
-      {cell.piece?.name === PieceNames.KING && cell.piece.color === check && (
+      {cell.piece?.name === PieceNames.KING && cell.piece.color === colorInCheck && (
         <div hidden={!enableHelpers} className="highlight king"></div>
       )}
       {cell.availableToMove && cell.piece && cell.piece?.name !== PieceNames.KING && (

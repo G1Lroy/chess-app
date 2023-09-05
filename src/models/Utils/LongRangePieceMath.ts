@@ -1,5 +1,4 @@
 import { Cell } from "../Cell/Cell";
-import { Piece, PieceNames } from "../Piece/Piece";
 
 export class LongRangePieceMath {
   public static isEmptyDiagonal(target: Cell, x: number, y: number) {

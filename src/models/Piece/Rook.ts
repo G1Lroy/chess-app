@@ -1,6 +1,5 @@
 import { Cell } from "../Cell/Cell";
 import { LongRangePieceMath } from "../Utils/LongRangePieceMath";
-import { King } from "./King";
 
 import { Color, Piece, PieceIcons, PieceNames } from "./Piece";
 

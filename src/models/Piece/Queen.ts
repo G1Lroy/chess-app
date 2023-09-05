@@ -1,7 +1,7 @@
 import { Cell } from "../Cell/Cell";
 import { LongRangePieceMath } from "../Utils/LongRangePieceMath";
 
-import { Color, Piece, PieceIcons, PieceNames } from "./Piece";
+import {  Color, Piece, PieceIcons, PieceNames } from "./Piece";
 
 export class Queen extends Piece {
   constructor(color: Color, cell: Cell) {

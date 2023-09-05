@@ -16,7 +16,4 @@ export class Knight extends Piece {
     // Проверяем, что ход является допустимым для коня
     return (dx === 2 && dy === 1) || (dx === 1 && dy === 2);
   }
-  public getFullRange(targetCell: Cell) {
-    return false;
-  }
 }

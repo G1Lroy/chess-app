@@ -4,7 +4,7 @@ import { KingMovesChecker } from "../Utils/KingMovesChecker";
 import { Board } from "./Board";
 
 export class BoardRenderer {
-  public renderCells(selectedCell: Cell | null, board: Board) {
+  public renderCells(selectedCell: Cell | null, board: Board, color: Color) {
     const isKing = selectedCell?.piece?.name === PieceNames.KING;
     const kingUtils = isKing ? new KingMovesChecker() : null;
 
@@ -22,11 +22,10 @@ export class BoardRenderer {
         }
 
         currentCell.availableToMove = !!selectedCell?.piece?.canMove(currentCell);
-
         currentCell.availableToAttack = false;
       }
     }
     // Запрещаем королю ходить на атакованые клетки
-    if (isKing) kingUtils!.cancelKingMove(selectedCell?.piece?.color as Color);
+    if (isKing) kingUtils!.cancelKingMove(color);
   }
 }

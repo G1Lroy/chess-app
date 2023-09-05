@@ -1,5 +1,5 @@
 import { Board } from "../Board/Board";
-import { Color, Piece, PieceNames } from "../Piece/Piece";
+import { Color, Piece } from "../Piece/Piece";
 
 export class Cell {
   public readonly x: number;
@@ -34,8 +34,11 @@ export class Cell {
     return this.piece === null;
   }
   // метод нужен только для пешки
-  isEnemy(target: Cell): boolean {
+  public isEnemy(target: Cell): boolean {
     if (!target.piece) return false;
     return this.piece?.color !== target.piece?.color;
+  }
+  public isCellOnBoard(x: number, y: number): boolean {
+    return x >= 0 && x <= 7 && y >= 0 && y <= 7;
   }
 }

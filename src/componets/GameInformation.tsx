@@ -6,7 +6,8 @@ interface GameInformationProps {
   setHelpers: (helpers: boolean) => void;
   restart: () => void;
   helpers: boolean;
-  check: Color | null;
+  colorInCheck: Color | null;
+  checkMateColor: Color | null;
 }
 
 const GameInformation: FC<GameInformationProps> = ({
@@ -14,7 +15,8 @@ const GameInformation: FC<GameInformationProps> = ({
   setHelpers,
   helpers,
   restart,
-  check,
+  colorInCheck,
+  checkMateColor,
 }) => {
   return (
     <div style={{ position: "absolute", top: "25px", right: "25px" }}>
@@ -38,7 +40,10 @@ const GameInformation: FC<GameInformationProps> = ({
         {currentPlayer === Color.WHITE ? "White turn" : "Black turn"}
       </div>
       <button onClick={() => restart()}>RESET GAME</button>
-      <div hidden={check === null}>{check === Color.WHITE ? "White check" : "Black check"} </div>
+      {colorInCheck === Color.WHITE && <div>White In Check</div>}
+      {colorInCheck === Color.BLACK && <div>Black In Check</div>}
+      {checkMateColor === Color.WHITE && <div>White Lose</div>}
+      {checkMateColor === Color.BLACK && <div>Black Lose</div>}
     </div>
   );
 };

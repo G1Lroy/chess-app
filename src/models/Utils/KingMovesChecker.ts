@@ -4,7 +4,7 @@ import { Bishop } from "../Piece/Bishop";
 import { King } from "../Piece/King";
 import { Knight } from "../Piece/Knight";
 import { Pawn } from "../Piece/Pawn";
-import { Color, Piece, PieceNames } from "../Piece/Piece";
+import {  Color, Piece, PieceNames } from "../Piece/Piece";
 import { Queen } from "../Piece/Queen";
 import { Rook } from "../Piece/Rook";
 
@@ -57,7 +57,7 @@ export class KingMovesChecker {
       }
     }
   }
-  public getCellBehindKing(attackerPiece: Piece): Cell | void {
+  private getCellBehindKing(attackerPiece: Piece): Cell | void {
     const king = this.king;
     if (!king) return;
 
@@ -83,13 +83,13 @@ export class KingMovesChecker {
     isRook: boolean,
     kingX: number,
     kingY: number,
-    pieceCoords: Cell
+    pieceCell: Cell
   ): { x: number; y: number } | null {
     let x;
     let y;
 
-    const pieceX = pieceCoords.x;
-    const pieceY = pieceCoords.y;
+    const pieceX = pieceCell.x;
+    const pieceY = pieceCell.y;
     // разница по осям фигуры с королем
     const xDiff = kingX - pieceX;
     const yDiff = kingY - pieceY;
@@ -135,12 +135,9 @@ export class KingMovesChecker {
       }
     }
 
-    const result = this.isCellOnBoard(x as number, y as number);
+    const result = pieceCell.isCellOnBoard(x as number, y as number);
 
     return result && x !== undefined && y !== undefined ? { x, y } : null;
-  }
-  private isCellOnBoard(x: number, y: number): boolean {
-    return x >= 0 && x <= 7 && y >= 0 && y <= 7;
   }
   private isKingNext(x: number, y: number): boolean {
     return this.king!.board.getCell(x, y).piece instanceof King;

@@ -14,5 +14,4 @@ export class Bishop extends Piece {
     if (LongRangePieceMath.isEmptyDiagonal(targetCell, this.cell.x, this.cell.y)) return true;
     return false;
   }
-
 }
