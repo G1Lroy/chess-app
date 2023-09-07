@@ -3,7 +3,7 @@ import { Bishop } from "../Piece/Bishop";
 import { King } from "../Piece/King";
 import { Knight } from "../Piece/Knight";
 import { Pawn } from "../Piece/Pawn";
-import { Color, Piece } from "../Piece/Piece";
+import { Color, Piece, PieceNames } from "../Piece/Piece";
 import { Queen } from "../Piece/Queen";
 import { Rook } from "../Piece/Rook";
 import _ from "lodash";
@@ -28,10 +28,11 @@ export class Board {
   }
   public defaultPieceSetup(): void {
     new King(this.black, this.getCell(7, 0));
-    new Queen(this.black, this.getCell(6, 0));
+    // new Queen(this.black, this.getCell(6, 0));
     new Rook(this.white, this.getCell(6, 7));
-    // new Rook(this.black, this.getCell(7, 6));
-    // new Rook(this.black, this.getCell(6, 6));
+    new Pawn(this.white, this.getCell(2, 4));
+    new Pawn(this.black, this.getCell(2, 3));
+    // new Pawn(this.black, this.getCell(3, 3));
     new Queen(this.white, this.getCell(5, 2));
     // new Bishop(this.white, this.getCell(3, 3));
 
@@ -79,16 +80,23 @@ export class Board {
     );
     return pieces;
   }
-  public findKing(color: Color): Cell | null {
-    let kingCell;
-    this.cellsGrid.some((row) =>
-      row.some((cell) => {
-        if (cell.piece?.color === color && cell.piece instanceof King) {
-          kingCell = cell;
-          return true;
-        }
+  public findPiecesWithOutKing(color: Color): Piece[] {
+    const pieces: Piece[] = [];
+    this.cellsGrid.forEach((row) =>
+      row.forEach((cell) => {
+        if (cell.piece && cell.piece.color === color && cell.piece.name !== PieceNames.KING)
+          pieces.push(cell.piece);
       })
     );
-    return kingCell || null;
+    return pieces;
+  }
+  public findKing(color: Color): Cell | void {
+    let kingCell;
+    for (const row of this.cellsGrid) {
+      kingCell = row.find((cell) => cell.piece?.color === color && cell.piece instanceof King);
+      if (kingCell) break;
+    }
+
+    return kingCell;
   }
 }

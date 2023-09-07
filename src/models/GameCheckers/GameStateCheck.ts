@@ -3,7 +3,7 @@ import { Cell } from "../Cell/Cell";
 import { Color } from "../Piece/Piece";
 
 export class GameStateCheck {
-  // ===========Check===========
+
   public getColorInCheck(board: Board, currentColor: Color, opposite: Color): Color | null {
     const king = board.findKing(opposite);
     const pieces = board.findPiecesByColor(currentColor);
@@ -26,5 +26,5 @@ export class GameStateCheck {
 
     return this.getColorInCheck(clone, opposite, color);
   }
-  // ===========CheckMate===========
+ 
 }

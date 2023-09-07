@@ -5,8 +5,7 @@ import { Board } from "../models/Board/Board";
 import { rankCoordinates } from "../coordinatesNames/rankCoordinates";
 import { BoardRenderer } from "../models/Board/BoardRenderer";
 import { Color, PieceNames } from "../models/Piece/Piece";
-import { GameStateCheck } from "../models/Game/GameStateCheck";
-import { GameStateCheckMate } from "../models/Game/GameStateCheckMate";
+import { GameStateCheck } from "../models/GameCheckers/GameStateCheck";
 import { opposite } from "../helpers/getOppositeColor";
 
 interface BoardProps {
@@ -16,7 +15,7 @@ interface BoardProps {
   passTurn: () => void;
   currentPlayer: Color;
   helpers: boolean;
-  checkGameCondition: () => void;
+  validateCheck: () => void;
   colorInCheck: Color | null;
   gameStateCheck: GameStateCheck;
   validateCheckMate: () => void;
@@ -29,30 +28,26 @@ const BoardComponent: FC<BoardProps> = ({
   passTurn,
   currentPlayer,
   helpers,
-  checkGameCondition,
+  validateCheck,
   colorInCheck,
   gameStateCheck,
-  validateCheckMate,
 }) => {
   const [selectedCell, setSelectedCell] = useState<Cell | null>(null);
-
   const clickHandler = (cell: Cell) => {
     if (currentPlayer === cell?.piece?.color) setSelectedCell(cell);
     if (cell.availableToMove && selectedCell !== cell) {
       if (cell.piece?.name === PieceNames.KING) return;
-      validateCheck(cell);
+      isCheck(cell);
     }
   };
-
   useEffect(() => {
     update();
   }, [selectedCell]);
-
   const update = () => {
     boardRenderer.renderCells(selectedCell, board, currentPlayer);
     setBoard(board.clone());
   };
-  const validateCheck = (cell: Cell) => {
+  const isCheck = (cell: Cell) => {
     const isCheckOnClone = gameStateCheck.isCheckOnClone(
       selectedCell as Cell,
       board,
@@ -65,7 +60,7 @@ const BoardComponent: FC<BoardProps> = ({
       console.log(message);
     } else {
       selectedCell?.movePiece(cell);
-      checkGameCondition();
+      validateCheck();
       passTurn();
       setSelectedCell(null);
     }
