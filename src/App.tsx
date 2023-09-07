@@ -1,80 +1,85 @@
-import { ConstructBoard } from "./models/BoardConstruct/ConstructBoard";
 import "./App.css";
+import BoardComponent from "./componets/BoardComponent";
 import { Board } from "./models/Board/Board";
-import { Coordinates, fileCoords } from "./models/Piece/Coordinates";
-import { Color, Piece } from "./models/Piece/Piece";
 import { useEffect, useState } from "react";
-import { Knight } from "./models/Piece/Knight";
+import { BoardRenderer } from "./models/Board/BoardRenderer";
+import GameInformation from "./componets/GameInformation";
+import { GameStateCheck } from "./models/GameCheckers/GameStateCheck";
+import { GameStateCheckMate } from "./models/GameCheckers/GameStateCheckMate";
+import { Color } from "./models/Piece/Piece";
+import { opposite } from "./helpers/getOppositeColor";
+import { GameStateStaleMate } from "./models/GameCheckers/GameStateStaleMate";
 
 function App() {
-  const [boardControl, setBoardControl] = useState(new Board());
+  const [board, setBoard] = useState(new Board());
+  const [currentPlayer, setCurrentPlayer] = useState(Color.WHITE);
+  const [helpers, setHelpers] = useState(true);
+  const [colorInCheck, setColorInCheck] = useState<Color | null>(null);
+  const [checkMateColor, setCheckMateColor] = useState<Color | null>(null);
+  const [staleMateColor, setStaleMateColor] = useState<Color | null>(null);
+  const [firstRender, setFirstRender] = useState(true);
+  const boardRenderer = new BoardRenderer();
+  const gameStateCheck = new GameStateCheck();
+  const gameStateCheckMate = new GameStateCheckMate();
+  const gameStateStaleMate = new GameStateStaleMate();
 
-  const boardArray = new ConstructBoard().constructBoard(boardControl);
-  const [board, setBoard] = useState(boardArray);
-
-  const [selectedPiece, setSelectedPiece] = useState({} as Piece | undefined | null);
-  const [availableCells, setAvailableCells] = useState([] as Coordinates[] | undefined | null);
-
-  const handleClick = (piece: Piece | undefined, cell: Coordinates): void => {
-    if (piece) {
-      setSelectedPiece(piece);
-      setAvailableCells(piece.getAvailableCell(boardControl));
-    } else if (availableCells && selectedPiece) {
-      for (const cellCorrd of availableCells) {
-        if (cell.equals(cellCorrd)) {
-          boardControl.movePiece(selectedPiece.coordinates, cell);
-          setSelectedPiece(null);
-          setAvailableCells(null);
-        }
-      }
-    }
-    return;
-  };
-
+  function restart() {
+    const newBoard = new Board();
+    newBoard.constructBoard();
+    newBoard.defaultPieceSetup();
+    setBoard(newBoard);
+    setCurrentPlayer(Color.WHITE);
+    setColorInCheck(null);
+    setCheckMateColor(null);
+    setStaleMateColor(null);
+  }
   useEffect(() => {
-    setBoard(boardArray);
-  }, [selectedPiece]);
+    restart();
+  }, []);
 
+  const passTurn = () => {
+    setCurrentPlayer(opposite(currentPlayer));
+  };
+  const validateCheck = () => {
+    setColorInCheck(gameStateCheck.getColorInCheck(board, currentPlayer, opposite(currentPlayer)));
+  };
+  const validateCheckMate = () => {
+    setCheckMateColor(gameStateCheckMate.isCheckMate(board, currentPlayer, opposite(currentPlayer)));
+  };
+  const validateStaleMate = () => {
+    setStaleMateColor(gameStateStaleMate.isStaleMate(board, currentPlayer));
+  };
+    
+  useEffect(() => {
+      if (!firstRender) {
+        if (colorInCheck) validateCheckMate();
+        else validateStaleMate();
+      }
+      setFirstRender(false);
+    }, [currentPlayer]);
   return (
-    <div
-      className="App"
-      onContextMenu={(e) => {
-        e.preventDefault();
-        setSelectedPiece(null);
-        setAvailableCells(null);
-      }}
-    >
-      <div className="board">
-        {board.map((row, rowIndex) => (
-          <div key={rowIndex} className="row">
-            <span className="files">{8 - rowIndex}</span>
-            {row.map((cell, cellIndex) => (
-              <div
-                onClick={() => handleClick(cell.piece, cell.coordinates)}
-                key={cellIndex}
-                className={`cell ${cell.color === "dark" ? "dark" : "light"}
-              ${availableCells?.some((item) => item.equals(cell?.coordinates)) ? "highlight" : ""}
-              `}
-              >
-                <div
-                  className={`cell-content ${cell.piece?.color ? "black-piece" : "light-piece"} ${
-                    cell.piece && selectedPiece && selectedPiece.coordinates?.equals(cell.piece.coordinates)
-                      ? "active"
-                      : ""
-                  }`}
-                >
-                  {cell.piece?.icon}
-                </div>
-              </div>
-            ))}
-          </div>
-        ))}
-        <div className="ranks">
-          {fileCoords.map((file, idx) => (
-            <span key={idx}>{file}</span>
-          ))}
-        </div>
-      </div>
+    <div className="App">
+      <BoardComponent
+        currentPlayer={currentPlayer}
+        passTurn={passTurn}
+        board={board}
+        setBoard={setBoard}
+        boardRenderer={boardRenderer}
+        helpers={helpers}
+        validateCheck={validateCheck}
+        colorInCheck={colorInCheck}
+        gameStateCheck={gameStateCheck}
+        validateCheckMate={validateCheckMate}
+      />
+      <GameInformation
+        restart={restart}
+        setHelpers={setHelpers}
+        helpers={helpers}
+        currentPlayer={currentPlayer}
+        colorInCheck={colorInCheck}
+        checkMateColor={checkMateColor}
+        staleMateColor={staleMateColor}
+      />
     </div>
   );
 }
@@ -82,4 +87,4 @@ function App() {
 export default App;
 
 // добавить шейк всех вигур перед игрой
-// через useEffect board и boardControl обновляеться с корректными координатами
+// добавить возможность стартовать и FEN нотации

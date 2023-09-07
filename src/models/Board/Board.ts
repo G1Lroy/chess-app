@@ -1,85 +1,102 @@
+import { Cell } from "../Cell/Cell";
 import { Bishop } from "../Piece/Bishop";
-import { Coordinates, fileCoords } from "../Piece/Coordinates";
 import { King } from "../Piece/King";
 import { Knight } from "../Piece/Knight";
 import { Pawn } from "../Piece/Pawn";
-import { Color, Piece } from "../Piece/Piece";
+import { Color, Piece, PieceNames } from "../Piece/Piece";
 import { Queen } from "../Piece/Queen";
 import { Rook } from "../Piece/Rook";
+import _ from "lodash";
 
 export class Board {
-  piecesOnBoard: { piece: Piece; coordinates: Coordinates }[] = [];
+  cellsGrid: Cell[][] = [];
+  black = Color.BLACK;
+  white = Color.WHITE;
 
-  constructor() {
-    this.defaultPieceSetup();
-    this.setPiece(new Knight(Color.WHITE, new Coordinates("D", 5)), new Coordinates("D", 5));
-    
+  public constructBoard(): void {
+    for (let x = 0; x < 8; x++) {
+      const row: Cell[] = [];
+      for (let y = 0; y < 8; y++) {
+        if ((x + y) % 2 !== 0) {
+          row.push(new Cell(y, x, this.black, null, this));
+        } else {
+          row.push(new Cell(y, x, this.white, null, this));
+        }
+      }
+      this.cellsGrid.push(row);
+    }
   }
-
-  public setPiece(piece: Piece, coordinates: Coordinates): void {
-    if (piece) this.piecesOnBoard.push({ piece, coordinates });
-  }
-
-  public removePiece(coordinates: Coordinates) {
-    this.piecesOnBoard = this.piecesOnBoard.filter((piece) => !piece.coordinates.equals(coordinates));
-  }
-
-  public movePiece(from: Coordinates, to: Coordinates): void {
-    const piece = this.getPieceByCoordinates(from);
-    this.removePiece(from);
-    this.setPiece(piece as Piece, to);
-  }
-
   public defaultPieceSetup(): void {
-    // set pawns
-    for (const x of fileCoords) {
-      this.setPiece(new Pawn(Color.WHITE, new Coordinates(x, 2)), new Coordinates(x, 2));
-      this.setPiece(new Pawn(Color.BLACK, new Coordinates(x, 7)), new Coordinates(x, 7));
+    new King(this.black, this.getCell(7, 0));
+    // new Queen(this.black, this.getCell(6, 0));
+    new Rook(this.white, this.getCell(6, 7));
+    new Pawn(this.white, this.getCell(2, 4));
+    new Pawn(this.black, this.getCell(2, 3));
+    // new Pawn(this.black, this.getCell(3, 3));
+    new Queen(this.white, this.getCell(5, 2));
+    // new Bishop(this.white, this.getCell(3, 3));
+
+    // for (let x = 0; x < 8; x++) {
+    //   new Pawn(this.black, this.getCell(x, 1));
+    //   new Pawn(this.white, this.getCell(x, 6));
+    // }
+    // new Rook(this.black, this.getCell(0, 0));
+    // new Rook(this.black, this.getCell(7, 0));
+    // new Rook(this.white, this.getCell(0, 7));
+    // new Rook(this.white, this.getCell(7, 7));
+
+    // new Knight(this.black, this.getCell(1, 0));
+    // new Knight(this.black, this.getCell(6, 0));
+    // new Knight(this.white, this.getCell(1, 7));
+    // new Knight(this.white, this.getCell(6, 7));
+    // new Bishop(this.black, this.getCell(2, 0));
+    // new Bishop(this.black, this.getCell(5, 0));
+    // new Bishop(this.white, this.getCell(2, 7));
+    // new Bishop(this.white, this.getCell(5, 7));
+    // new Queen(this.black, this.getCell(3, 0));
+    // new Queen(this.white, this.getCell(3, 7));
+    // new King(this.black, this.getCell(4, 0));
+    new King(this.white, this.getCell(4, 7));
+  }
+  public getCell(x: number, y: number) {
+    return this.cellsGrid[y][x];
+  }
+  public clone(): Board {
+    const newBoard = new Board();
+    newBoard.cellsGrid = this.cellsGrid;
+    return newBoard;
+  }
+  public cloneDeep(): Board {
+    const newBoard = new Board();
+    newBoard.cellsGrid = _.cloneDeep(this.cellsGrid);
+    return newBoard;
+  }
+  public findPiecesByColor(color: Color): Piece[] {
+    const pieces: Piece[] = [];
+    this.cellsGrid.forEach((row) =>
+      row.forEach((cell) => {
+        if (cell.piece && cell.piece.color === color) pieces.push(cell.piece);
+      })
+    );
+    return pieces;
+  }
+  public findPiecesWithOutKing(color: Color): Piece[] {
+    const pieces: Piece[] = [];
+    this.cellsGrid.forEach((row) =>
+      row.forEach((cell) => {
+        if (cell.piece && cell.piece.color === color && cell.piece.name !== PieceNames.KING)
+          pieces.push(cell.piece);
+      })
+    );
+    return pieces;
+  }
+  public findKing(color: Color): Cell | void {
+    let kingCell;
+    for (const row of this.cellsGrid) {
+      kingCell = row.find((cell) => cell.piece?.color === color && cell.piece instanceof King);
+      if (kingCell) break;
     }
-    // set rooks
-    this.setPiece(new Rook(Color.WHITE, new Coordinates("A", 1)), new Coordinates("A", 1));
-    this.setPiece(new Rook(Color.WHITE, new Coordinates("H", 1)), new Coordinates("H", 1));
-    this.setPiece(new Rook(Color.BLACK, new Coordinates("A", 8)), new Coordinates("A", 8));
-    this.setPiece(new Rook(Color.BLACK, new Coordinates("H", 8)), new Coordinates("H", 8));
-    // set knight
-    this.setPiece(new Knight(Color.WHITE, new Coordinates("B", 1)), new Coordinates("B", 1));
-    this.setPiece(new Knight(Color.WHITE, new Coordinates("G", 1)), new Coordinates("G", 1));
-    this.setPiece(new Knight(Color.BLACK, new Coordinates("B", 8)), new Coordinates("B", 8));
-    this.setPiece(new Knight(Color.BLACK, new Coordinates("G", 8)), new Coordinates("G", 8));
-    //set bishops
-    this.setPiece(new Bishop(Color.WHITE, new Coordinates("C", 1)), new Coordinates("C", 1));
-    this.setPiece(new Bishop(Color.WHITE, new Coordinates("F", 1)), new Coordinates("F", 1));
-    this.setPiece(new Bishop(Color.BLACK, new Coordinates("C", 8)), new Coordinates("C", 8));
-    this.setPiece(new Bishop(Color.BLACK, new Coordinates("F", 8)), new Coordinates("F", 8));
-    //set queens
-    this.setPiece(new Queen(Color.WHITE, new Coordinates("D", 1)), new Coordinates("D", 1));
-    this.setPiece(new Queen(Color.BLACK, new Coordinates("D", 8)), new Coordinates("D", 8));
-    // set kings
-    this.setPiece(new King(Color.WHITE, new Coordinates("E", 1)), new Coordinates("E", 1));
-    this.setPiece(new King(Color.BLACK, new Coordinates("E", 8)), new Coordinates("E", 8));
-  }
 
-  public isCellDark(coordinates: Coordinates): boolean {
-    const { xCoords, yCoords } = coordinates;
-    const xIndex = fileCoords.indexOf(xCoords);
-    const yIndex = yCoords - 1;
-    return (xIndex + yIndex) % 2 === 0;
-  }
-
-  public colorizeCell(isCellDark: boolean): string {
-    return isCellDark ? "dark" : "light";
-  }
-
-  public getPieceByCoordinates(coordinates: Coordinates): Piece | undefined {
-    for (const item of this.piecesOnBoard) {
-      if (item.coordinates.equals(coordinates)) return item.piece;
-    }
-  }
-
-  public isCellUsed(coordinates: Coordinates): boolean {
-    for (const item of this.piecesOnBoard) {
-      if (item.coordinates.equals(coordinates)) return true;
-    }
-    return false;
+    return kingCell;
   }
 }
