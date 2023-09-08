@@ -4,6 +4,7 @@ import { LongRangePieceMath } from "../Utils/LongRangePieceMath";
 import { Color, Piece, PieceIcons, PieceNames } from "./Piece";
 
 export class Rook extends Piece {
+  isFirstStep = true;
   constructor(color: Color, cell: Cell) {
     super(color, cell);
     this.name = PieceNames.ROOK;

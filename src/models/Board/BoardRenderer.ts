@@ -1,3 +1,4 @@
+import { opposite } from "../../helpers/getOppositeColor";
 import { Cell } from "../Cell/Cell";
 import { Color, PieceNames } from "../Piece/Piece";
 import { KingMovesChecker } from "../Utils/KingMovesChecker";
@@ -13,19 +14,11 @@ export class BoardRenderer {
 
       for (let j = 0; j < row.length; j++) {
         const currentCell = row[j];
-
-        if (isKing) {
-          // ищем вражеские фигуры
-          kingUtils!.getEnemyPieces(currentCell, selectedCell as Cell);
-          // ищем клетки вокруг короля
-          kingUtils!.getCellAroundKing(currentCell, selectedCell as Cell);
-        }
-
         currentCell.availableToMove = !!selectedCell?.piece?.canMove(currentCell);
         currentCell.availableToAttack = false;
       }
     }
     // Запрещаем королю ходить на атакованые клетки
-    if (isKing) kingUtils!.cancelKingMove(color);
+    if (isKing) kingUtils!.cancelKingMove(board, opposite(color), color, selectedCell);
   }
 }

@@ -4,29 +4,17 @@ import { Bishop } from "../Piece/Bishop";
 import { King } from "../Piece/King";
 import { Knight } from "../Piece/Knight";
 import { Pawn } from "../Piece/Pawn";
-import {  Color, Piece, PieceNames } from "../Piece/Piece";
+import { Color, Piece, PieceNames } from "../Piece/Piece";
 import { Queen } from "../Piece/Queen";
 import { Rook } from "../Piece/Rook";
+import { PiecesUtils } from "./PiecesUtils";
 
 export class KingMovesChecker {
-  enemyPieces: Piece[] = [];
-  cellsAroundKing: Cell[] = [];
-  king: Cell | null = null;
+  
+  public cancelKingMove(board: Board, opposite: Color, currentColor: Color, king: Cell): void {
+    const cellsAroundKing = PiecesUtils.findKingMoves(board, king, false);
+    const enemyPieces = PiecesUtils.findPiecesByColor(board, opposite, true);
 
-  public getEnemyPieces(currentCell: Cell, selectedCell: Cell): void {
-    if (currentCell.piece && currentCell.piece?.color !== selectedCell.piece?.color) {
-      this.enemyPieces.push(currentCell.piece);
-    }
-  }
-  public getCellAroundKing(currentCell: Cell, selectedCell: Cell): void {
-    this.king = selectedCell;
-    const diffX = Math.abs(currentCell.x - selectedCell.x);
-    const diffY = Math.abs(currentCell.y - selectedCell.y);
-
-    if (diffX <= 1 && diffY <= 1 && (!currentCell.piece || currentCell.piece instanceof King))
-      this.cellsAroundKing.push(currentCell);
-  }
-  public cancelKingMove(currentColor: Color): void {
     // логика проверок следующая:
     // если вражеская фигура может походить на клетку вокрух короля
     // тогда запрещаем королю на нее ходить
@@ -35,8 +23,8 @@ export class KingMovesChecker {
     походить пешка, после проверок и запрета королю ходить, фейковая фигура удаляется  */
     //  если король под боем дальнобойно финуры, то нужно запретить королю ходить по атакуемой оси
     //  для этого в метод getCellBehindKing передаем атакующую фигуру
-    for (let cell of this.cellsAroundKing) {
-      for (let piece of this.enemyPieces) {
+    for (let cell of cellsAroundKing) {
+      for (let piece of enemyPieces) {
         if (piece instanceof Pawn && cell.piece?.name !== PieceNames.KING) {
           cell.piece = new Knight(currentColor, cell);
           cell.piece.fakeCreated = true;
@@ -46,7 +34,7 @@ export class KingMovesChecker {
           cell.availableToAttack = true;
           cell.availableToMove = false;
 
-          const cellBehind = this.getCellBehindKing(piece);
+          const cellBehind = this.getCellBehindKing(king, piece);
 
           if (cellBehind) {
             cellBehind.availableToAttack = true;
@@ -57,16 +45,14 @@ export class KingMovesChecker {
       }
     }
   }
-  private getCellBehindKing(attackerPiece: Piece): Cell | void {
-    const king = this.king;
-    if (!king) return;
-
+  private getCellBehindKing(king: Cell, attackerPiece: Piece): Cell | void {
     const isRook = attackerPiece instanceof Rook;
     const isBishop = attackerPiece instanceof Bishop;
     const isQueen = attackerPiece instanceof Queen;
     if (!(isRook || isBishop || isQueen)) return;
 
     const coordsBehind = this.getCoordinatesBehindMath(
+      king.board,
       isBishop,
       isQueen,
       isRook,
@@ -78,6 +64,7 @@ export class KingMovesChecker {
     return coordsBehind ? king.board.getCell(coordsBehind.x, coordsBehind.y) : undefined;
   }
   private getCoordinatesBehindMath(
+    board: Board,
     isBishop: boolean,
     isQueen: boolean,
     isRook: boolean,
@@ -112,24 +99,24 @@ export class KingMovesChecker {
     } else if (isQueen && xDiff === 0) {
       // для королевы нужно добавить еще одну проверку
       //  как она может бить по диагонали и находитья на той же оси по x или y
-      if (this.isKingNext(pieceX, pieceY + diffYCheck)) {
+      if (this.isKingNext(pieceX, pieceY + diffYCheck, board)) {
         // єта проверка расчитана на кейс когда королева впритык к королю
         // в таком случае нужно запретить королю движение по атакуемой оси
         x = kingX;
         y = kingY + diffYCheck;
       }
-      if (this.isEmptyNext(kingX, kingY - diffYCheck)) {
+      if (this.isEmptyNext(kingX, kingY - diffYCheck, board)) {
         // в этой проверку получаем клетку "за" королем, только в  том случае если
         // королеву никто не блокирует
         x = kingX;
         y = kingY + diffYCheck;
       }
     } else if (isQueen && yDiff === 0) {
-      if (this.isKingNext(pieceX + diffXCheck, pieceY)) {
+      if (this.isKingNext(pieceX + diffXCheck, pieceY, board)) {
         x = kingX + diffXCheck;
         y = kingY;
       }
-      if (this.isEmptyNext(kingX - diffXCheck, kingY)) {
+      if (this.isEmptyNext(kingX - diffXCheck, kingY, board)) {
         x = kingX + diffXCheck;
         y = kingY;
       }
@@ -139,10 +126,10 @@ export class KingMovesChecker {
 
     return result && x !== undefined && y !== undefined ? { x, y } : null;
   }
-  private isKingNext(x: number, y: number): boolean {
-    return this.king!.board.getCell(x, y).piece instanceof King;
+  private isKingNext(x: number, y: number, board: Board): boolean {
+    return board.getCell(x, y).piece instanceof King;
   }
-  private isEmptyNext(x: number, y: number): boolean {
-    return this.king!.board.getCell(x, y).isEmpty();
+  private isEmptyNext(x: number, y: number, board: Board): boolean {
+    return board.getCell(x, y).isEmpty();
   }
 }

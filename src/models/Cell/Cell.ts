@@ -1,5 +1,7 @@
 import { Board } from "../Board/Board";
-import { Color, Piece } from "../Piece/Piece";
+import { King } from "../Piece/King";
+import { Color, Piece, PieceNames } from "../Piece/Piece";
+import { Rook } from "../Piece/Rook";
 
 export class Cell {
   public readonly x: number;
@@ -25,6 +27,7 @@ export class Cell {
   public setPiece(piece: Piece) {
     this.piece = piece;
     this.piece.cell = this;
+    this.piece.isFirstStep = false;
   }
   public movePiece(target: Cell) {
     target.setPiece(this.piece as Piece);

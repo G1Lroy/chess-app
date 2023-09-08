@@ -1,12 +1,13 @@
-import React, { FC, useEffect, useState } from "react";
+import React, { FC, useContext, useEffect, useState } from "react";
 import { Cell } from "../models/Cell/Cell";
 import CellComponent from "./CellComponent";
 import { Board } from "../models/Board/Board";
 import { rankCoordinates } from "../coordinatesNames/rankCoordinates";
 import { BoardRenderer } from "../models/Board/BoardRenderer";
 import { Color, PieceNames } from "../models/Piece/Piece";
-import { GameStateCheck } from "../models/GameCheckers/GameStateCheck";
+import { GameStateCheck } from "../models/Game/GameStateCheck";
 import { opposite } from "../helpers/getOppositeColor";
+import { useCellContext } from "../context";
 
 interface BoardProps {
   board: Board;
@@ -32,7 +33,8 @@ const BoardComponent: FC<BoardProps> = ({
   colorInCheck,
   gameStateCheck,
 }) => {
-  const [selectedCell, setSelectedCell] = useState<Cell | null>(null);
+  const { selectedCell, setSelectedCell } = useCellContext();
+
   const clickHandler = (cell: Cell) => {
     if (currentPlayer === cell?.piece?.color) setSelectedCell(cell);
     if (cell.availableToMove && selectedCell !== cell) {
@@ -40,9 +42,6 @@ const BoardComponent: FC<BoardProps> = ({
       isCheck(cell);
     }
   };
-  useEffect(() => {
-    update();
-  }, [selectedCell]);
   const update = () => {
     boardRenderer.renderCells(selectedCell, board, currentPlayer);
     setBoard(board.clone());
@@ -65,6 +64,9 @@ const BoardComponent: FC<BoardProps> = ({
       setSelectedCell(null);
     }
   };
+  useEffect(() => {
+    update();
+  }, [selectedCell]);
 
   return (
     <div
@@ -95,7 +97,6 @@ const BoardComponent: FC<BoardProps> = ({
           <span key={rank}>{rank}</span>
         ))}
       </div>
-      <div>{}</div>
     </div>
   );
 };

@@ -27,35 +27,35 @@ export class Board {
     }
   }
   public defaultPieceSetup(): void {
-    new King(this.black, this.getCell(7, 0));
+    // new King(this.black, this.getCell(7, 0));
     // new Queen(this.black, this.getCell(6, 0));
-    new Rook(this.white, this.getCell(6, 7));
-    new Pawn(this.white, this.getCell(2, 4));
-    new Pawn(this.black, this.getCell(2, 3));
+    // new Rook(this.white, this.getCell(6, 7));
+    // new Pawn(this.white, this.getCell(2, 4));
+    // new Pawn(this.black, this.getCell(2, 3));
     // new Pawn(this.black, this.getCell(3, 3));
-    new Queen(this.white, this.getCell(5, 2));
+    // new Queen(this.white, this.getCell(5, 2));
     // new Bishop(this.white, this.getCell(3, 3));
 
-    // for (let x = 0; x < 8; x++) {
-    //   new Pawn(this.black, this.getCell(x, 1));
-    //   new Pawn(this.white, this.getCell(x, 6));
-    // }
-    // new Rook(this.black, this.getCell(0, 0));
-    // new Rook(this.black, this.getCell(7, 0));
-    // new Rook(this.white, this.getCell(0, 7));
-    // new Rook(this.white, this.getCell(7, 7));
+    for (let x = 0; x < 8; x++) {
+      new Pawn(this.black, this.getCell(x, 1));
+      new Pawn(this.white, this.getCell(x, 6));
+    }
+    new Rook(this.black, this.getCell(0, 0));
+    new Rook(this.black, this.getCell(7, 0));
+    new Rook(this.white, this.getCell(0, 7));
+    new Rook(this.white, this.getCell(7, 7));
 
-    // new Knight(this.black, this.getCell(1, 0));
-    // new Knight(this.black, this.getCell(6, 0));
-    // new Knight(this.white, this.getCell(1, 7));
-    // new Knight(this.white, this.getCell(6, 7));
-    // new Bishop(this.black, this.getCell(2, 0));
-    // new Bishop(this.black, this.getCell(5, 0));
-    // new Bishop(this.white, this.getCell(2, 7));
-    // new Bishop(this.white, this.getCell(5, 7));
-    // new Queen(this.black, this.getCell(3, 0));
-    // new Queen(this.white, this.getCell(3, 7));
-    // new King(this.black, this.getCell(4, 0));
+    new Knight(this.black, this.getCell(1, 0));
+    new Knight(this.black, this.getCell(6, 0));
+    new Knight(this.white, this.getCell(1, 7));
+    new Knight(this.white, this.getCell(6, 7));
+    new Bishop(this.black, this.getCell(2, 0));
+    new Bishop(this.black, this.getCell(5, 0));
+    new Bishop(this.white, this.getCell(2, 7));
+    new Bishop(this.white, this.getCell(5, 7));
+    new Queen(this.black, this.getCell(3, 0));
+    new Queen(this.white, this.getCell(3, 7));
+    new King(this.black, this.getCell(4, 0));
     new King(this.white, this.getCell(4, 7));
   }
   public getCell(x: number, y: number) {
@@ -70,33 +70,5 @@ export class Board {
     const newBoard = new Board();
     newBoard.cellsGrid = _.cloneDeep(this.cellsGrid);
     return newBoard;
-  }
-  public findPiecesByColor(color: Color): Piece[] {
-    const pieces: Piece[] = [];
-    this.cellsGrid.forEach((row) =>
-      row.forEach((cell) => {
-        if (cell.piece && cell.piece.color === color) pieces.push(cell.piece);
-      })
-    );
-    return pieces;
-  }
-  public findPiecesWithOutKing(color: Color): Piece[] {
-    const pieces: Piece[] = [];
-    this.cellsGrid.forEach((row) =>
-      row.forEach((cell) => {
-        if (cell.piece && cell.piece.color === color && cell.piece.name !== PieceNames.KING)
-          pieces.push(cell.piece);
-      })
-    );
-    return pieces;
-  }
-  public findKing(color: Color): Cell | void {
-    let kingCell;
-    for (const row of this.cellsGrid) {
-      kingCell = row.find((cell) => cell.piece?.color === color && cell.piece instanceof King);
-      if (kingCell) break;
-    }
-
-    return kingCell;
   }
 }

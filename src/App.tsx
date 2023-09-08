@@ -4,11 +4,12 @@ import { Board } from "./models/Board/Board";
 import { useEffect, useState } from "react";
 import { BoardRenderer } from "./models/Board/BoardRenderer";
 import GameInformation from "./componets/GameInformation";
-import { GameStateCheck } from "./models/GameCheckers/GameStateCheck";
-import { GameStateCheckMate } from "./models/GameCheckers/GameStateCheckMate";
+import { GameStateCheck } from "./models/Game/GameStateCheck";
+import { GameStateCheckMate } from "./models/Game/GameStateCheckMate";
 import { Color } from "./models/Piece/Piece";
 import { opposite } from "./helpers/getOppositeColor";
-import { GameStateStaleMate } from "./models/GameCheckers/GameStateStaleMate";
+import { GameStateStaleMate } from "./models/Game/GameStateStaleMate";
+import { useCellContext } from "./context";
 
 function App() {
   const [board, setBoard] = useState(new Board());
@@ -22,7 +23,7 @@ function App() {
   const gameStateCheck = new GameStateCheck();
   const gameStateCheckMate = new GameStateCheckMate();
   const gameStateStaleMate = new GameStateStaleMate();
-
+  const { setSelectedCell } = useCellContext();
   function restart() {
     const newBoard = new Board();
     newBoard.constructBoard();
@@ -32,11 +33,11 @@ function App() {
     setColorInCheck(null);
     setCheckMateColor(null);
     setStaleMateColor(null);
+    setSelectedCell(null);
   }
   useEffect(() => {
     restart();
   }, []);
-
   const passTurn = () => {
     setCurrentPlayer(opposite(currentPlayer));
   };
@@ -49,14 +50,14 @@ function App() {
   const validateStaleMate = () => {
     setStaleMateColor(gameStateStaleMate.isStaleMate(board, currentPlayer));
   };
-    
+
   useEffect(() => {
-      if (!firstRender) {
-        if (colorInCheck) validateCheckMate();
-        else validateStaleMate();
-      }
-      setFirstRender(false);
-    }, [currentPlayer]);
+    if (!firstRender) {
+      if (colorInCheck) validateCheckMate();
+      else validateStaleMate();
+    }
+    setFirstRender(false);
+  }, [currentPlayer]);
   return (
     <div className="App">
       <BoardComponent
@@ -72,6 +73,7 @@ function App() {
         validateCheckMate={validateCheckMate}
       />
       <GameInformation
+        board={board}
         restart={restart}
         setHelpers={setHelpers}
         helpers={helpers}
