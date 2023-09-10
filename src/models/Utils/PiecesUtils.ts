@@ -38,8 +38,5 @@ export class PiecesUtils {
     }
     return kingMoves;
   }
-  public static findPiece(board: Board, color: Color, pieceName: PieceNames): Cell[] {
-    const cells = board.cellsGrid.flat();
-    return cells.filter((cell) => cell.piece?.name === pieceName && cell.piece.color === color);
-  }
+  
 }

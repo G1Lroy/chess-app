@@ -1,10 +1,13 @@
-import React, { FC, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import { Color, PieceNames } from "../models/Piece/Piece";
 import { useCellContext } from "../context";
 import { Board } from "../models/Board/Board";
 import { PiecesUtils } from "../models/Utils/PiecesUtils";
 import { King } from "../models/Piece/King";
-
+import { Castling } from "../models/Game/Castling";
+import "./../assets/GameInformation.css";
+import { Cell } from "../models/Cell/Cell";
+import { ICastlingUtils } from "../App";
 interface GameInformationProps {
   currentPlayer: Color;
   setHelpers: (helpers: boolean) => void;
@@ -14,6 +17,11 @@ interface GameInformationProps {
   checkMateColor: Color | null;
   staleMateColor: Color | null;
   board: Board;
+  passTurn: () => void;
+  castlingUtils: ICastlingUtils;
+  castlingBtn: boolean;
+  makeCastling: (islong: boolean, rook: Cell | null, king: Cell | null) => void;
+  checkCastling: () => void;
 }
 
 const GameInformation: FC<GameInformationProps> = ({
@@ -25,21 +33,12 @@ const GameInformation: FC<GameInformationProps> = ({
   checkMateColor,
   staleMateColor,
   board,
+  passTurn,
+  castlingUtils,
+  castlingBtn,
+  makeCastling,
+  checkCastling,
 }) => {
-  const { selectedCell, setSelectedCell } = useCellContext();
-  const makeCastling = () => {
-    const king = PiecesUtils.findKing(board, currentPlayer);
-    const rook = PiecesUtils.findPiece(board, currentPlayer, PieceNames.ROOK);
-
-    console.log(rook);
-    console.log(king);
-
-    if (king?.piece?.isFirstStep) {
-      // setSelectedCell(king);
-    } else {
-      console.log("King alredy moves");
-    }
-  };
   return (
     <div style={{ position: "absolute", top: "25px", right: "25px" }}>
       <label
@@ -62,7 +61,20 @@ const GameInformation: FC<GameInformationProps> = ({
         {currentPlayer === Color.WHITE ? "White turn" : "Black turn"}
       </div>
       <button onClick={() => restart()}>RESET GAME</button>
-      <button onClick={() => makeCastling()}>CASTLING</button>
+      <button hidden={!castlingBtn} onClick={() => checkCastling()}>
+        CASTLING
+      </button>
+      {castlingUtils.longCastling && (
+        <button onClick={() => makeCastling(true, castlingUtils.leftRook, castlingUtils.king)}>
+          long CASTLING
+        </button>
+      )}
+      {castlingUtils.shortCastling && (
+        <button onClick={() => makeCastling(false, castlingUtils.rightRook, castlingUtils.king)}>
+          short CASTLING
+        </button>
+      )}
+
       {colorInCheck === Color.WHITE && !checkMateColor && <div>White In Check</div>}
       {colorInCheck === Color.BLACK && !checkMateColor && <div>Black In Check</div>}
       {checkMateColor === Color.WHITE && <div>White Lose</div>}
