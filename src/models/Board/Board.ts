@@ -31,7 +31,7 @@ export class Board {
     // new Queen(this.black, this.getCell(6, 0));
     // new Rook(this.white, this.getCell(6, 7));
     // new Pawn(this.white, this.getCell(2, 4));
-    // new Pawn(this.black, this.getCell(1, 6));
+    // new Pawn(this.black, this.getCell(0, 6));
     // new Pawn(this.black, this.getCell(3, 3));
     // new Queen(this.white, this.getCell(5, 2));
     // new Bishop(this.white, this.getCell(3, 3));
@@ -50,8 +50,8 @@ export class Board {
     // new Knight(this.white, this.getCell(1, 7));
     // new Knight(this.white, this.getCell(6, 7));
     // new Bishop(this.black, this.getCell(2, 0));
-    // new Bishop(this.black, this.getCell(5, 0));
-    // new Bishop(this.white, this.getCell(2, 7));
+    new Bishop(this.black, this.getCell(5, 0));
+    new Bishop(this.white, this.getCell(2, 7));
     // new Bishop(this.white, this.getCell(5, 7));
     // new Queen(this.black, this.getCell(3, 0));
     // new Queen(this.white, this.getCell(3, 7));

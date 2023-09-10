@@ -3,26 +3,38 @@ import { Board } from "../Board/Board";
 import { Cell } from "../Cell/Cell";
 import { Color, PieceNames } from "../Piece/Piece";
 import { PiecesUtils } from "../Utils/PiecesUtils";
+import { GameStateCheck } from "./GameStateCheck";
 
 export class Castling {
-  public isEmptyOrAttacedBetween(board: Board, color: Color, long: boolean): boolean {
+  check = new GameStateCheck();
+  
+  public isCellsAvailableToCastling(board: Board, color: Color, long: boolean, king: Cell): boolean {
     const enemyPieces = PiecesUtils.findPiecesByColor(board, opposite(color), true);
-    const y = color === Color.WHITE ? 7 : 0;
-    let startX, endX;
-    if (long) {
-      startX = 1;
-      endX = 3;
-    } else {
-      startX = 5;
-      endX = 6;
+    const cells = this.getCastlingCells(long, board, color);
+
+    if (!cells.length) return false;
+
+    for (const cell of cells) {
+      const isCellAttack = enemyPieces.some(
+        (piece) => piece.canMove(cell) || this.check.isCheckOnClone(king, board, cell, color, opposite(color))
+      );
+
+      if (isCellAttack) return false;
     }
 
-    for (let x = startX; x <= endX; x++) {
-      const cell = board.cellsGrid[y][x];
-      const isCellAttaced = enemyPieces.some((piece) => piece.canMove(cell));
-      if (!cell.isEmpty() || isCellAttaced) return false;
-    }
     return true;
+  }
+  private getCastlingCells(long: boolean, board: Board, color: Color): Cell[] {
+    const cells = [];
+    const y = color === Color.WHITE ? 7 : 0;
+    const [startX, endX] = long ? [1, 3] : [5, 6];
+
+    for (let x = startX; x <= endX; x++) {
+      const cell = board.getCell(x, y);
+      if (!cell.isEmpty()) return [];
+      cells.push(cell);
+    }
+    return cells;
   }
   public makeCastlingMoves(board: Board, king: Cell, rook: Cell, long: boolean): void {
     const kingOffset = long ? 1 : 6;
@@ -32,11 +44,23 @@ export class Castling {
     king.movePiece(targetKing);
     rook.movePiece(targetRook);
   }
-  public findRooks(board: Board, color: Color): Cell[] {
+  public findRooks(board: Board, color: Color): (Cell | null)[] {
     const cells = board.cellsGrid.flat();
-    return cells.filter(
-      (cell) =>
-        cell.piece?.name === PieceNames.ROOK && cell.piece.color === color && cell.piece.isFirstStep === true
-    );
+    let leftRook = null;
+    let rightRook = null;
+
+    for (const cell of cells) {
+      if (
+        cell.piece?.isFirstStep === true &&
+        cell.piece.name === PieceNames.ROOK &&
+        cell.piece.color === color
+      ) {
+        if (cell.x === 0) leftRook = cell;
+        else if (cell.x === 7) rightRook = cell;
+      }
+      if (leftRook && rightRook) break;
+    }
+
+    return [leftRook, rightRook];
   }
 }

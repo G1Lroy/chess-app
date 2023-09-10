@@ -1,13 +1,10 @@
-import React, { FC, useEffect, useState } from "react";
-import { Color, PieceNames } from "../models/Piece/Piece";
-import { useCellContext } from "../context";
-import { Board } from "../models/Board/Board";
-import { PiecesUtils } from "../models/Utils/PiecesUtils";
-import { King } from "../models/Piece/King";
-import { Castling } from "../models/Game/Castling";
-import "./../assets/GameInformation.css";
-import { Cell } from "../models/Cell/Cell";
+import { FC } from "react";
 import { ICastlingUtils } from "../App";
+import { Board } from "../models/Board/Board";
+import { Cell } from "../models/Cell/Cell";
+import { Color } from "../models/Piece/Piece";
+import "./../assets/GameInformation.css";
+
 interface GameInformationProps {
   currentPlayer: Color;
   setHelpers: (helpers: boolean) => void;
@@ -32,8 +29,6 @@ const GameInformation: FC<GameInformationProps> = ({
   colorInCheck,
   checkMateColor,
   staleMateColor,
-  board,
-  passTurn,
   castlingUtils,
   castlingBtn,
   makeCastling,
@@ -64,12 +59,12 @@ const GameInformation: FC<GameInformationProps> = ({
       <button hidden={!castlingBtn} onClick={() => checkCastling()}>
         CASTLING
       </button>
-      {castlingUtils.longCastling && (
+      {castlingUtils.longCastling && castlingUtils.leftRook && (
         <button onClick={() => makeCastling(true, castlingUtils.leftRook, castlingUtils.king)}>
           long CASTLING
         </button>
       )}
-      {castlingUtils.shortCastling && (
+      {castlingUtils.shortCastling && castlingUtils.rightRook && (
         <button onClick={() => makeCastling(false, castlingUtils.rightRook, castlingUtils.king)}>
           short CASTLING
         </button>
@@ -86,4 +81,4 @@ const GameInformation: FC<GameInformationProps> = ({
 };
 
 export default GameInformation;
-//
+

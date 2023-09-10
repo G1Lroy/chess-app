@@ -23,7 +23,6 @@ export class PiecesUtils {
   }
   public static findKingMoves(board: Board, king: Cell, withPieces: boolean): Cell[] {
     const kingMoves = [];
-    if (!king) return [];
     for (let xOffset = -1; xOffset <= 1; xOffset++) {
       for (let yOffset = -1; yOffset <= 1; yOffset++) {
         if (xOffset === 0 && yOffset === 0) continue;
@@ -38,5 +37,4 @@ export class PiecesUtils {
     }
     return kingMoves;
   }
-  
 }

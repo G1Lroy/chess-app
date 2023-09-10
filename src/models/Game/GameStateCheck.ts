@@ -13,15 +13,16 @@ export class GameStateCheck {
   }
   public isCheckOnClone(selectedCell: Cell, board: Board, target: Cell, color: Color, opposite: Color) {
     const clone = board.cloneDeep();
-    let cloneCell: Cell = selectedCell;
-    let cloneTarget: Cell = target;
+    let cloneCell: Cell | null = null;
+    let cloneTarget: Cell | null = null;
     const cells = clone.cellsGrid.flat();
-    cells.some((cell) => {
+    for (const cell of cells) {
       if (cell.equals(selectedCell.x, selectedCell.y)) cloneCell = cell;
       if (cell.equals(target.x, target.y)) cloneTarget = cell;
-    });
+      if (cloneTarget && cloneCell) break;
+    }
 
-    cloneCell.movePiece(cloneTarget);
+    cloneCell!.movePiece(cloneTarget!);
 
     return this.getColorInCheck(clone, opposite, color);
   }

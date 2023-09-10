@@ -24,6 +24,7 @@ export interface ICastlingUtils {
 }
 
 function App() {
+  const { setSelectedCell } = useCellContext();
   const [board, setBoard] = useState(new Board());
   const [currentPlayer, setCurrentPlayer] = useState(Color.WHITE);
   const [helpers, setHelpers] = useState(true);
@@ -35,7 +36,7 @@ function App() {
   const gameStateCheck = new GameStateCheck();
   const gameStateCheckMate = new GameStateCheckMate();
   const gameStateStaleMate = new GameStateStaleMate();
-  const { setSelectedCell } = useCellContext();
+  const casltling = new Castling();
   const initialState = {
     king: null,
     leftRook: null,
@@ -44,7 +45,6 @@ function App() {
     shortCastling: false,
     kingFirstStep: true,
   };
-  const casltling = new Castling();
   const [castlingUtils, setCastlingUtils] = useState<ICastlingUtils>(initialState);
   const [castlingBtn, setCastlingBtn] = useState(true);
 
@@ -59,7 +59,7 @@ function App() {
     setStaleMateColor(null);
     setSelectedCell(null);
     setCastlingUtils(initialState);
-    setCastlingBtn(true)
+    setCastlingBtn(true);
   }
   useEffect(() => {
     restart();
@@ -78,17 +78,16 @@ function App() {
   };
   const checkCastling = () => {
     const king = PiecesUtils.findKing(board, currentPlayer);
-    const rooks = casltling.findRooks(board, currentPlayer);
-    const leftRook = rooks.find((r) => r.x === 0) || null;
-    const rightRook = rooks.find((r) => r.x === 7) || null;
-    const longCastling = casltling.isEmptyOrAttacedBetween(board, currentPlayer, true);
-    const shortCastling = casltling.isEmptyOrAttacedBetween(board, currentPlayer, false);
+    const [leftRook, rightRook] = casltling.findRooks(board, currentPlayer);
+    const longCastling = casltling.isCellsAvailableToCastling(board, currentPlayer, true, king!);
+    const shortCastling = casltling.isCellsAvailableToCastling(board, currentPlayer, false, king!);
 
-    if (
+    const canCastle =
       king?.piece?.isFirstStep &&
       !checkMateColor &&
-      ((leftRook && longCastling) || (rightRook && shortCastling))
-    ) {
+      ((leftRook && longCastling) || (rightRook && shortCastling));
+
+    if (canCastle) {
       setCastlingBtn(false);
       setCastlingUtils({ ...castlingUtils, king, leftRook, rightRook, longCastling, shortCastling });
       setSelectedCell(king);
