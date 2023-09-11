@@ -29,9 +29,10 @@ export class Board {
   public defaultPieceSetup(): void {
     // new King(this.black, this.getCell(7, 0));
     // new Queen(this.black, this.getCell(6, 0));
-    // new Rook(this.white, this.getCell(6, 7));
+    new Rook(this.black, this.getCell(1, 0));
     // new Pawn(this.white, this.getCell(2, 4));
-    // new Pawn(this.black, this.getCell(0, 6));
+    new Pawn(this.white, this.getCell(2, 1));
+    new Pawn(this.black, this.getCell(6, 6));
     // new Pawn(this.black, this.getCell(3, 3));
     // new Queen(this.white, this.getCell(5, 2));
     // new Bishop(this.white, this.getCell(3, 3));

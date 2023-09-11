@@ -6,7 +6,7 @@ import { BoardRenderer } from "./models/Board/BoardRenderer";
 import GameInformation from "./componets/GameInformation";
 import { GameStateCheck } from "./models/Game/GameStateCheck";
 import { GameStateCheckMate } from "./models/Game/GameStateCheckMate";
-import { Color } from "./models/Piece/Piece";
+import { Color, PieceNames } from "./models/Piece/Piece";
 import { opposite } from "./helpers/getOppositeColor";
 import { GameStateStaleMate } from "./models/Game/GameStateStaleMate";
 import { useCellContext } from "./context";
@@ -24,7 +24,7 @@ export interface ICastlingUtils {
 }
 
 function App() {
-  const { setSelectedCell } = useCellContext();
+  const { selectedCell, setSelectedCell } = useCellContext();
   const [board, setBoard] = useState(new Board());
   const [currentPlayer, setCurrentPlayer] = useState(Color.WHITE);
   const [helpers, setHelpers] = useState(true);

@@ -3,7 +3,9 @@ import { ICastlingUtils } from "../App";
 import { Board } from "../models/Board/Board";
 import { Cell } from "../models/Cell/Cell";
 import { Color } from "../models/Piece/Piece";
-import "./../assets/GameInformation.css";
+import "./../assets/styles/GameInformation.css";
+//@ts-ignore
+import castlingIcon from "./../assets/images/castling.svg";
 
 interface GameInformationProps {
   currentPlayer: Color;
@@ -56,8 +58,8 @@ const GameInformation: FC<GameInformationProps> = ({
         {currentPlayer === Color.WHITE ? "White turn" : "Black turn"}
       </div>
       <button onClick={() => restart()}>RESET GAME</button>
-      <button hidden={!castlingBtn} onClick={() => checkCastling()}>
-        CASTLING
+      <button title="Castling" hidden={!castlingBtn} onClick={() => checkCastling()}>
+        <img style={{ width: 25 }} src={castlingIcon} alt="Castling" />
       </button>
       {castlingUtils.longCastling && castlingUtils.leftRook && (
         <button onClick={() => makeCastling(true, castlingUtils.leftRook, castlingUtils.king)}>
@@ -81,4 +83,3 @@ const GameInformation: FC<GameInformationProps> = ({
 };
 
 export default GameInformation;
-

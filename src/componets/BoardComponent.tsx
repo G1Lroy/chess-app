@@ -2,12 +2,16 @@ import React, { FC, useContext, useEffect, useState } from "react";
 import { Cell } from "../models/Cell/Cell";
 import CellComponent from "./CellComponent";
 import { Board } from "../models/Board/Board";
-import { rankCoordinates } from "../coordinatesNames/rankCoordinates";
+import { rankCoordinates } from "../mockObjects/rankCoordinates";
 import { BoardRenderer } from "../models/Board/BoardRenderer";
-import { Color, PieceNames } from "../models/Piece/Piece";
+import { Color, Piece, PieceIcons, PieceNames } from "../models/Piece/Piece";
 import { GameStateCheck } from "../models/Game/GameStateCheck";
 import { opposite } from "../helpers/getOppositeColor";
 import { useCellContext } from "../context";
+import { PawnTransform } from "../models/Game/PawnTransform";
+import { Queen } from "../models/Piece/Queen";
+import { pieces } from "../mockObjects/pieceForTransform";
+import "./../assets/styles/Board.css";
 
 interface BoardProps {
   board: Board;
@@ -21,6 +25,10 @@ interface BoardProps {
   gameStateCheck: GameStateCheck;
   validateCheckMate: () => void;
 }
+interface IState {
+  visible: boolean;
+  targetCell: null | Cell;
+}
 
 const BoardComponent: FC<BoardProps> = ({
   board,
@@ -33,18 +41,31 @@ const BoardComponent: FC<BoardProps> = ({
   colorInCheck,
   gameStateCheck,
 }) => {
+  const update = () => {
+    boardRenderer.renderCells(selectedCell, board, currentPlayer);
+    setBoard(board.clone());
+  };
+  const initialState = { visible: false, targetCell: null };
+  const piecesForTransform = pieces;
+  const [chosePiece, setChosePiece] = useState<IState>(initialState);
   const { selectedCell, setSelectedCell } = useCellContext();
+  const pawnUtils = new PawnTransform();
 
   const clickHandler = (cell: Cell) => {
     if (currentPlayer === cell?.piece?.color) setSelectedCell(cell);
     if (cell.availableToMove && selectedCell !== cell) {
       if (cell.piece?.name === PieceNames.KING) return;
-      isCheck(cell);
+      if (!colorInCheck && pawnUtils.isPawnOnLastLine(currentPlayer, selectedCell!, cell)) {
+        setChosePiece({ ...chosePiece, visible: true, targetCell: cell });
+      } else isCheck(cell);
     }
   };
-  const update = () => {
-    boardRenderer.renderCells(selectedCell, board, currentPlayer);
-    setBoard(board.clone());
+  const pawnTransform = (piece: { name: PieceNames; icon: PieceIcons }) => {
+    pawnUtils.transform(selectedCell!, chosePiece.targetCell!, piece.name, currentPlayer);
+    update();
+    validateCheck();
+    passTurn();
+    setChosePiece(initialState);
   };
   const isCheck = (cell: Cell) => {
     const isCheckOnClone = gameStateCheck.isCheckOnClone(
@@ -66,6 +87,7 @@ const BoardComponent: FC<BoardProps> = ({
   };
   useEffect(() => {
     update();
+    setChosePiece(initialState);
   }, [selectedCell]);
 
   return (
@@ -76,6 +98,21 @@ const BoardComponent: FC<BoardProps> = ({
       }}
       className="board"
     >
+      {chosePiece.visible && (
+        <div
+          className="chose-piece-container"
+          style={{
+            top: currentPlayer === Color.WHITE ? 20 : "auto",
+            bottom: currentPlayer === Color.BLACK ? 20 : "auto",
+          }}
+        >
+          {piecesForTransform.map((piece) => (
+            <div key={piece.name} onClick={() => pawnTransform(piece)}>
+              {piece.icon}
+            </div>
+          ))}
+        </div>
+      )}
       {board.cellsGrid.map((row, rowIndex) => (
         <div key={rowIndex} className="row">
           <span className="files">{8 - rowIndex}</span>
