@@ -55,6 +55,9 @@
 .highlight.king {
     box-shadow: inset 0px 0px 4px 3px #0019f9;
 }
+.highlight.passant {
+    box-shadow: inset 0px 0px 4px 3px #1cb014;
+}
 
 
 .highlight.underAttack {

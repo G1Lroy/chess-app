@@ -29,6 +29,7 @@ export abstract class Piece {
   public icon: string;
   public fakeCreated?: boolean;
   public isFirstStep?: boolean;
+  public isPawnLongStep?: boolean;
 
   constructor(color: Color, cell: Cell) {
     this.color = color;

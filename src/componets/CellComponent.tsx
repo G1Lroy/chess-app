@@ -1,6 +1,6 @@
 import React, { FC } from "react";
 import { Cell } from "../models/Cell/Cell";
-import {  Color, PieceNames } from "../models/Piece/Piece";
+import { Color, PieceNames } from "../models/Piece/Piece";
 
 interface CellProps {
   clickHandler: (cell: Cell) => void;
@@ -34,6 +34,7 @@ const CellComponent: FC<CellProps> = ({
         <div hidden={!enableHelpers} className="highlight piece"></div>
       )}
       {!cell.piece && cell.availableToMove && <div className="highlight empty"></div>}
+      {cell.availableToPassant && <div className="highlight passant"></div>}
 
       {selectedCell?.piece?.name === PieceNames.KING &&
         cell.availableToAttack &&

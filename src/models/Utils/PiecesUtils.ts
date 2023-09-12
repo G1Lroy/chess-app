@@ -1,6 +1,7 @@
 import { Board } from "../Board/Board";
 import { Cell } from "../Cell/Cell";
 import { King } from "../Piece/King";
+import { Pawn } from "../Piece/Pawn";
 import { Color, Piece, PieceNames } from "../Piece/Piece";
 
 export class PiecesUtils {
@@ -36,5 +37,9 @@ export class PiecesUtils {
       }
     }
     return kingMoves;
+  }
+  public static checkPawnLongMove(cell: Cell, target: Cell) {
+    if (cell.piece instanceof Pawn && Math.abs(target.y - cell.y) === 2) cell.piece.isPawnLongStep = true;
+    if (cell.piece instanceof Pawn && Math.abs(target.y - cell.y) === 1) cell.piece.isPawnLongStep = false;
   }
 }

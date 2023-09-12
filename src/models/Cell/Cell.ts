@@ -1,7 +1,9 @@
 import { Board } from "../Board/Board";
 import { King } from "../Piece/King";
+import { Pawn } from "../Piece/Pawn";
 import { Color, Piece, PieceNames } from "../Piece/Piece";
 import { Rook } from "../Piece/Rook";
+import { PiecesUtils } from "../Utils/PiecesUtils";
 
 export class Cell {
   public readonly x: number;
@@ -10,6 +12,7 @@ export class Cell {
   public piece: Piece | null;
   public availableToMove: boolean;
   public availableToAttack: boolean;
+  public availableToPassant?: boolean;
   public board: Board;
 
   constructor(x: number, y: number, color: Color, piece: Piece | null, board: Board) {
@@ -19,6 +22,7 @@ export class Cell {
     this.piece = piece;
     this.availableToMove = false;
     this.availableToAttack = false;
+    this.availableToPassant = false;
     this.board = board;
   }
   public equals(otherX: number, otherY: number): boolean {
@@ -30,6 +34,9 @@ export class Cell {
     this.piece.isFirstStep = false;
   }
   public movePiece(target: Cell) {
+    // метод определяет пешкки которые сделали ход на 2 клетки
+    PiecesUtils.checkPawnLongMove(this, target);
+
     target.setPiece(this.piece as Piece);
     this.piece = null;
   }

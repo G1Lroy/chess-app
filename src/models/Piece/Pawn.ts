@@ -3,6 +3,7 @@ import { King } from "./King";
 import { Color, Piece, PieceIcons, PieceNames } from "./Piece";
 
 export class Pawn extends Piece {
+  isPawnLongStep = false;
   constructor(color: Color, cell: Cell) {
     super(color, cell);
     this.name = PieceNames.PAWN;
@@ -27,7 +28,7 @@ export class Pawn extends Piece {
 
     // Проверка атаки
     if ((diffX === 1 || diffX === -1) && diffY === direction) {
-      return this.cell.isEnemy(targetCell);
+      return this.cell.isEnemy(targetCell) || targetCell.availableToPassant!;
     }
 
     // Проверка обычного хода на 1 клетку

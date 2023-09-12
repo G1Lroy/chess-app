@@ -12,6 +12,8 @@ import { PawnTransform } from "../models/Game/PawnTransform";
 import { Queen } from "../models/Piece/Queen";
 import { pieces } from "../mockObjects/pieceForTransform";
 import "./../assets/styles/Board.css";
+import { Passant } from "../models/Game/Passant";
+import { Pawn } from "../models/Piece/Pawn";
 
 interface BoardProps {
   board: Board;
@@ -48,16 +50,35 @@ const BoardComponent: FC<BoardProps> = ({
   const initialState = { visible: false, targetCell: null };
   const piecesForTransform = pieces;
   const [chosePiece, setChosePiece] = useState<IState>(initialState);
+  const [passantAvailable, setPassantAvailable] = useState(false);
   const { selectedCell, setSelectedCell } = useCellContext();
   const pawnUtils = new PawnTransform();
+  const pawnPassant = new Passant();
 
   const clickHandler = (cell: Cell) => {
-    if (currentPlayer === cell?.piece?.color) setSelectedCell(cell);
+    // выбор фигуры
+    if (currentPlayer === cell?.piece?.color) {
+      setSelectedCell(cell);
+      // Проверка взятия на проходе
+      const canPassant = pawnPassant.canPassant(currentPlayer, cell, board);
+      if (canPassant) {
+        setPassantAvailable(true);
+        pawnPassant.makePassantAvailable(board, currentPlayer);
+      }
+    }
+    // ход фигуры
     if (cell.availableToMove && selectedCell !== cell) {
+      // Реализация взятия на проходе
+      if (cell.availableToPassant) pawnPassant.getPawnByPassant(cell, selectedCell!, board);
+      // запрет брать короля
       if (cell.piece?.name === PieceNames.KING) return;
-      if (!colorInCheck && pawnUtils.isPawnOnLastLine(currentPlayer, selectedCell!, cell)) {
+      // проверка для превращения пешки
+      if (!colorInCheck && pawnUtils.isPawnOnLastLine(currentPlayer, selectedCell!, cell))
         setChosePiece({ ...chosePiece, visible: true, targetCell: cell });
-      } else isCheck(cell);
+      // проверка шаха
+      else isCheck(cell);
+      // обнуление клеток для взятия на проходе
+      if (passantAvailable) pawnPassant.resetPassantCells(board);
     }
   };
   const pawnTransform = (piece: { name: PieceNames; icon: PieceIcons }) => {
@@ -95,6 +116,7 @@ const BoardComponent: FC<BoardProps> = ({
       onContextMenu={(e) => {
         e.preventDefault();
         setSelectedCell(null);
+        pawnPassant.resetPassantCells(board);
       }}
       className="board"
     >

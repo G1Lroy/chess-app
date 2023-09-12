@@ -5,6 +5,7 @@ import { KingMovesChecker } from "../Utils/KingMovesChecker";
 import { Board } from "./Board";
 
 export class BoardRenderer {
+
   public renderCells(selectedCell: Cell | null, board: Board, color: Color) {
     const isKing = selectedCell?.piece?.name === PieceNames.KING;
     const kingUtils = isKing ? new KingMovesChecker() : null;
@@ -21,4 +22,5 @@ export class BoardRenderer {
     // Запрещаем королю ходить на атакованые клетки
     if (isKing) kingUtils!.cancelKingMove(board, opposite(color), color, selectedCell);
   }
+  
 }

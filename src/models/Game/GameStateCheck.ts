@@ -4,6 +4,7 @@ import { Color } from "../Piece/Piece";
 import { PiecesUtils } from "../Utils/PiecesUtils";
 
 export class GameStateCheck {
+  
   public getColorInCheck(board: Board, currentColor: Color, opposite: Color): Color | null {
     const king = PiecesUtils.findKing(board, opposite);
     const pieces = PiecesUtils.findPiecesByColor(board, currentColor, true);
