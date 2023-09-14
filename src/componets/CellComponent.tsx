@@ -1,24 +1,16 @@
 import React, { FC } from "react";
 import { Cell } from "../models/Cell/Cell";
 import { Color, PieceNames } from "../models/Piece/Piece";
+import useBoardStore from "../store/board";
 
 interface CellProps {
   clickHandler: (cell: Cell) => void;
   cell: Cell;
   selected: boolean | undefined;
-  selectedCell: Cell | null;
-  enableHelpers: boolean;
-  colorInCheck: Color | null;
 }
 
-const CellComponent: FC<CellProps> = ({
-  clickHandler,
-  cell,
-  selected,
-  selectedCell,
-  enableHelpers,
-  colorInCheck,
-}) => {
+const CellComponent: FC<CellProps> = ({ clickHandler, cell, selected }) => {
+  const { helpers, colorInCheck, selectedCell } = useBoardStore();
   return (
     <div
       onClick={() => clickHandler(cell)}
@@ -28,10 +20,10 @@ const CellComponent: FC<CellProps> = ({
                 ${selected ? "active" : ""}`}
     >
       {cell.piece?.name === PieceNames.KING && cell.piece.color === colorInCheck && (
-        <div hidden={!enableHelpers} className="highlight king"></div>
+        <div hidden={!helpers} className="highlight king"></div>
       )}
       {cell.availableToMove && cell.piece && cell.piece?.name !== PieceNames.KING && (
-        <div hidden={!enableHelpers} className="highlight piece"></div>
+        <div hidden={!helpers} className="highlight piece"></div>
       )}
       {!cell.piece && cell.availableToMove && <div className="highlight empty"></div>}
       {cell.availableToPassant && <div className="highlight passant"></div>}
@@ -40,7 +32,7 @@ const CellComponent: FC<CellProps> = ({
         cell.availableToAttack &&
         selectedCell.piece?.canMove(cell) &&
         !cell.piece && (
-          <div hidden={!enableHelpers} className="highlight underAttack">
+          <div hidden={!helpers} className="highlight underAttack">
             💥
           </div>
         )}

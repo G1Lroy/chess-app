@@ -1,59 +1,43 @@
-import React, { FC, useContext, useEffect, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { Cell } from "../models/Cell/Cell";
 import CellComponent from "./CellComponent";
-import { Board } from "../models/Board/Board";
 import { rankCoordinates } from "../mockObjects/rankCoordinates";
-import { BoardRenderer } from "../models/Board/BoardRenderer";
-import { Color, Piece, PieceIcons, PieceNames } from "../models/Piece/Piece";
-import { GameStateCheck } from "../models/Game/GameStateCheck";
+import { Color, PieceIcons, PieceNames } from "../models/Piece/Piece";
 import { opposite } from "../helpers/getOppositeColor";
-import { useCellContext } from "../context";
-import { PawnTransform } from "../models/Game/PawnTransform";
-import { Queen } from "../models/Piece/Queen";
 import { pieces } from "../mockObjects/pieceForTransform";
 import "./../assets/styles/Board.css";
-import { Passant } from "../models/Game/Passant";
-import { Pawn } from "../models/Piece/Pawn";
+import useBoardStore from "../store/board";
 
-interface BoardProps {
-  board: Board;
-  setBoard: (board: Board) => void;
-  boardRenderer: BoardRenderer;
-  passTurn: () => void;
-  currentPlayer: Color;
-  helpers: boolean;
-  validateCheck: () => void;
-  colorInCheck: Color | null;
-  gameStateCheck: GameStateCheck;
-  validateCheckMate: () => void;
-}
 interface IState {
   visible: boolean;
   targetCell: null | Cell;
 }
 
-const BoardComponent: FC<BoardProps> = ({
-  board,
-  setBoard,
-  boardRenderer,
-  passTurn,
-  currentPlayer,
-  helpers,
-  validateCheck,
-  colorInCheck,
-  gameStateCheck,
-}) => {
+const BoardComponent: FC = () => {
+  const {
+    boardRenderer,
+    check,
+    board,
+    currentPlayer,
+    passTurn,
+    selectedCell,
+    setSelectedCell,
+    colorInCheck,
+    validateCheck,
+    pawnPassant,
+    pawnUtils,
+    validateCheckMate,
+    validateStaleMate,
+  } = useBoardStore();
+
   const update = () => {
     boardRenderer.renderCells(selectedCell, board, currentPlayer);
-    setBoard(board.clone());
+    // setBoard(board.clone());
   };
+  const [firstRender, setFirstRender] = useState(true);
   const initialState = { visible: false, targetCell: null };
-  const piecesForTransform = pieces;
   const [chosePiece, setChosePiece] = useState<IState>(initialState);
   const [passantAvailable, setPassantAvailable] = useState(false);
-  const { selectedCell, setSelectedCell } = useCellContext();
-  const pawnUtils = new PawnTransform();
-  const pawnPassant = new Passant();
 
   const clickHandler = (cell: Cell) => {
     // выбор фигуры
@@ -84,12 +68,12 @@ const BoardComponent: FC<BoardProps> = ({
   const pawnTransform = (piece: { name: PieceNames; icon: PieceIcons }) => {
     pawnUtils.transform(selectedCell!, chosePiece.targetCell!, piece.name, currentPlayer);
     update();
-    validateCheck();
     passTurn();
+    validateCheck();
     setChosePiece(initialState);
   };
   const isCheck = (cell: Cell) => {
-    const isCheckOnClone = gameStateCheck.isCheckOnClone(
+    const isCheckOnClone = check.isCheckOnClone(
       selectedCell as Cell,
       board,
       cell,
@@ -106,11 +90,19 @@ const BoardComponent: FC<BoardProps> = ({
       setSelectedCell(null);
     }
   };
+ 
+  useEffect(() => {
+    if (!firstRender) {
+      if (colorInCheck) validateCheckMate();
+      else validateStaleMate();
+    }
+    setFirstRender(false);
+  }, [currentPlayer]);
+  
   useEffect(() => {
     update();
     setChosePiece(initialState);
   }, [selectedCell]);
-
   return (
     <div
       onContextMenu={(e) => {
@@ -128,7 +120,7 @@ const BoardComponent: FC<BoardProps> = ({
             bottom: currentPlayer === Color.BLACK ? 20 : "auto",
           }}
         >
-          {piecesForTransform.map((piece) => (
+          {pieces.map((piece) => (
             <div key={piece.name} onClick={() => pawnTransform(piece)}>
               {piece.icon}
             </div>
@@ -144,9 +136,6 @@ const BoardComponent: FC<BoardProps> = ({
               cell={cell}
               clickHandler={clickHandler}
               selected={selectedCell?.equals(cell.x, cell.y)}
-              selectedCell={selectedCell}
-              enableHelpers={helpers}
-              colorInCheck={colorInCheck}
             />
           ))}
         </div>

@@ -1,62 +1,86 @@
-import { FC } from "react";
-import { ICastlingUtils } from "../App";
-import { Board } from "../models/Board/Board";
+import { FC, useState } from "react";
 import { Cell } from "../models/Cell/Cell";
 import { Color } from "../models/Piece/Piece";
 import "./../assets/styles/GameInformation.css";
 //@ts-ignore
 import castlingIcon from "./../assets/images/castling.svg";
+import useBoardStore from "../store/board";
+import { PiecesUtils } from "../models/Utils/PiecesUtils";
 
-interface GameInformationProps {
-  currentPlayer: Color;
-  setHelpers: (helpers: boolean) => void;
-  restart: () => void;
-  helpers: boolean;
-  colorInCheck: Color | null;
-  checkMateColor: Color | null;
-  staleMateColor: Color | null;
-  board: Board;
-  passTurn: () => void;
-  castlingUtils: ICastlingUtils;
-  castlingBtn: boolean;
-  makeCastling: (islong: boolean, rook: Cell | null, king: Cell | null) => void;
-  checkCastling: () => void;
+interface ICastlingUtils {
+  king: Cell | null;
+  leftRook: Cell | null;
+  rightRook: Cell | null;
+  longCastling: boolean;
+  shortCastling: boolean;
+  kingFirstStep: boolean;
 }
+const initialState: ICastlingUtils = {
+  king: null,
+  leftRook: null,
+  rightRook: null,
+  longCastling: false,
+  shortCastling: false,
+  kingFirstStep: true,
+};
 
-const GameInformation: FC<GameInformationProps> = ({
-  currentPlayer,
-  setHelpers,
-  helpers,
-  restart,
-  colorInCheck,
-  checkMateColor,
-  staleMateColor,
-  castlingUtils,
-  castlingBtn,
-  makeCastling,
-  checkCastling,
-}) => {
+const GameInformation: FC = () => {
+  const {
+    toggleHelpers,
+    helpers,
+    currentPlayer,
+    board,
+    passTurn,
+    setSelectedCell,
+    colorInCheck,
+    colorInCheckMate,
+    colorInStaleMate,
+    restart,
+    castling,
+  } = useBoardStore();
+
+  const [castlingUtils, setCastlingUtils] = useState<ICastlingUtils>(initialState);
+  const [castlingBtn, setCastlingBtn] = useState(true);
+
+  const checkCastling = () => {
+    const king = PiecesUtils.findKing(board, currentPlayer);
+    const [leftRook, rightRook] = castling.findRooks(board, currentPlayer);
+    const longCastling = castling.isCellsAvailableToCastling(board, currentPlayer, true, king!);
+    const shortCastling = castling.isCellsAvailableToCastling(board, currentPlayer, false, king!);
+
+    const canCastle =
+      king?.piece?.isFirstStep &&
+      !colorInCheckMate &&
+      ((leftRook && longCastling) || (rightRook && shortCastling));
+
+    if (canCastle) {
+      setCastlingBtn(false);
+      setCastlingUtils({ ...castlingUtils, king, leftRook, rightRook, longCastling, shortCastling });
+      setSelectedCell(king);
+    } else {
+      console.log("castling unavailable");
+    }
+  };
+  const makeCastling = (islong: boolean, rook: Cell | null, king: Cell | null) => {
+    castling.makeCastlingMoves(board, king!, rook!, islong);
+    passTurn();
+    setSelectedCell(null);
+    setCastlingUtils(initialState);
+    setCastlingBtn(true);
+  };
   return (
     <div style={{ position: "absolute", top: "25px", right: "25px" }}>
-      <label
-        // style={{ cursor: "pointer", position: "absolute", top: "25px", left: "25px" }}
-        htmlFor="helpers"
-      >
+      <label htmlFor="helpers">
         Enable help
         <input
-          onChange={() => setHelpers(!helpers)}
+          onChange={() => toggleHelpers(!helpers)}
           style={{ marginLeft: "5px" }}
           checked={helpers}
           id="helpers"
           type="checkbox"
         ></input>
       </label>
-      <div
-        // style={{ position: "absolute", top: "50px", left: "25px" }}
-        className="player-color"
-      >
-        {currentPlayer === Color.WHITE ? "White turn" : "Black turn"}
-      </div>
+      <div className="player-color">{currentPlayer === Color.WHITE ? "White turn" : "Black turn"}</div>
       <button onClick={() => restart()}>RESET GAME</button>
       <button title="Castling" hidden={!castlingBtn} onClick={() => checkCastling()}>
         <img style={{ width: 25 }} src={castlingIcon} alt="Castling" />
@@ -72,12 +96,12 @@ const GameInformation: FC<GameInformationProps> = ({
         </button>
       )}
 
-      {colorInCheck === Color.WHITE && !checkMateColor && <div>White In Check</div>}
-      {colorInCheck === Color.BLACK && !checkMateColor && <div>Black In Check</div>}
-      {checkMateColor === Color.WHITE && <div>White Lose</div>}
-      {checkMateColor === Color.BLACK && <div>Black Lose</div>}
-      {staleMateColor === Color.WHITE && <div>Stalemate to White</div>}
-      {staleMateColor === Color.BLACK && <div>Stalemate to Black</div>}
+      {colorInCheck === Color.WHITE && !colorInCheckMate && <div>White In Check</div>}
+      {colorInCheck === Color.BLACK && !colorInCheckMate && <div>Black In Check</div>}
+      {colorInCheckMate === Color.WHITE && <div>White Lose</div>}
+      {colorInCheckMate === Color.BLACK && <div>Black Lose</div>}
+      {colorInStaleMate === Color.WHITE && <div>Stalemate to White</div>}
+      {colorInStaleMate === Color.BLACK && <div>Stalemate to Black</div>}
     </div>
   );
 };
