@@ -2,41 +2,28 @@ import { FC, useEffect, useState } from "react";
 import { Cell } from "../models/Cell/Cell";
 import CellComponent from "./CellComponent";
 import { rankCoordinates } from "../mockObjects/rankCoordinates";
-import { Color, PieceIcons, PieceNames } from "../models/Piece/Piece";
+import { Color, PieceIcons, PieceNames } from "../models/Piece/types";
 import { opposite } from "../helpers/getOppositeColor";
 import { pieces } from "../mockObjects/pieceForTransform";
 import "./../assets/styles/Board.css";
 import useBoardStore from "../store/board";
-
-interface IState {
-  visible: boolean;
-  targetCell: null | Cell;
-}
+import usePlayerStore from "../store/player";
+import useGameStore from "../store/game";
+import { IChosePieceState } from "./types";
 
 const BoardComponent: FC = () => {
-  const {
-    boardRenderer,
-    check,
-    board,
-    currentPlayer,
-    passTurn,
-    selectedCell,
-    setSelectedCell,
-    colorInCheck,
-    validateCheck,
-    pawnPassant,
-    pawnUtils,
-    validateCheckMate,
-    validateStaleMate,
-  } = useBoardStore();
+  const { boardRenderer, board, selectedCell, setSelectedCell } = useBoardStore();
+  const { currentPlayer, passTurn } = usePlayerStore();
+  const { pawnPassant, colorInCheck, check, pawnUtils, validateCheck, validateCheckMate, validateStaleMate } =
+    useGameStore();
 
   const update = () => {
     boardRenderer.renderCells(selectedCell, board, currentPlayer);
     // setBoard(board.clone());
   };
   const [firstRender, setFirstRender] = useState(true);
-  const initialState = { visible: false, targetCell: null };
-  const [chosePiece, setChosePiece] = useState<IState>(initialState);
+  const initialState: IChosePieceState = { visible: false, targetCell: null };
+  const [chosePiece, setChosePiece] = useState<IChosePieceState>(initialState);
   const [passantAvailable, setPassantAvailable] = useState(false);
 
   const clickHandler = (cell: Cell) => {
@@ -52,10 +39,10 @@ const BoardComponent: FC = () => {
     }
     // ход фигуры
     if (cell.availableToMove && selectedCell !== cell) {
-      // Реализация взятия на проходе
-      if (cell.availableToPassant) pawnPassant.getPawnByPassant(cell, selectedCell!, board);
       // запрет брать короля
       if (cell.piece?.name === PieceNames.KING) return;
+      // Реализация взятия на проходе
+      if (cell.availableToPassant) pawnPassant.getPawnByPassant(cell, selectedCell!, board);
       // проверка для превращения пешки
       if (!colorInCheck && pawnUtils.isPawnOnLastLine(currentPlayer, selectedCell!, cell))
         setChosePiece({ ...chosePiece, visible: true, targetCell: cell });
@@ -68,8 +55,8 @@ const BoardComponent: FC = () => {
   const pawnTransform = (piece: { name: PieceNames; icon: PieceIcons }) => {
     pawnUtils.transform(selectedCell!, chosePiece.targetCell!, piece.name, currentPlayer);
     update();
-    passTurn();
     validateCheck();
+    passTurn();
     setChosePiece(initialState);
   };
   const isCheck = (cell: Cell) => {
@@ -90,7 +77,7 @@ const BoardComponent: FC = () => {
       setSelectedCell(null);
     }
   };
- 
+
   useEffect(() => {
     if (!firstRender) {
       if (colorInCheck) validateCheckMate();
@@ -98,7 +85,7 @@ const BoardComponent: FC = () => {
     }
     setFirstRender(false);
   }, [currentPlayer]);
-  
+
   useEffect(() => {
     update();
     setChosePiece(initialState);

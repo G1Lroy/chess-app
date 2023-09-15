@@ -1,6 +1,6 @@
 import { Board } from "../Board/Board";
 import { Cell } from "../Cell/Cell";
-import { Color } from "../Piece/Piece";
+import { Color } from "../Piece/types";
 import { PiecesUtils } from "../Utils/PiecesUtils";
 
 export class GameStateCheck {

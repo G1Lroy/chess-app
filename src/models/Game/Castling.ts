@@ -1,7 +1,7 @@
 import { opposite } from "../../helpers/getOppositeColor";
 import { Board } from "../Board/Board";
 import { Cell } from "../Cell/Cell";
-import { Color, PieceNames } from "../Piece/Piece";
+import { Color, PieceNames } from "../Piece/types";
 import { PiecesUtils } from "../Utils/PiecesUtils";
 import { GameStateCheck } from "./GameStateCheck";
 

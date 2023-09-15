@@ -1,6 +1,6 @@
 import { Cell } from "../Cell/Cell";
-import { King } from "./King";
-import { Color, Piece, PieceIcons, PieceNames } from "./Piece";
+import { Piece } from "./Piece";
+import { Color, PieceNames, PieceIcons } from "./types";
 
 export class Pawn extends Piece {
   isPawnLongStep = false;

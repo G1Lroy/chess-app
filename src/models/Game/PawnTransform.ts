@@ -1,9 +1,10 @@
 import { Cell } from "../Cell/Cell";
 import { Bishop } from "../Piece/Bishop";
 import { Knight } from "../Piece/Knight";
-import { Color, Piece, PieceNames } from "../Piece/Piece";
 import { Queen } from "../Piece/Queen";
 import { Rook } from "../Piece/Rook";
+import { Piece } from "../Piece/Piece";
+import { Color, PieceNames } from "../Piece/types";
 
 export class PawnTransform {
   public isPawnOnLastLine(color: Color, selectedCell: Cell, target: Cell) {

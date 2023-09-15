@@ -4,13 +4,13 @@ import { Bishop } from "../Piece/Bishop";
 import { King } from "../Piece/King";
 import { Knight } from "../Piece/Knight";
 import { Pawn } from "../Piece/Pawn";
-import { Color, Piece, PieceNames } from "../Piece/Piece";
+import { Piece } from "../Piece/Piece";
+import { Color, PieceNames } from "../Piece/types";
 import { Queen } from "../Piece/Queen";
 import { Rook } from "../Piece/Rook";
 import { PiecesUtils } from "./PiecesUtils";
 
 export class KingMovesChecker {
-  
   public cancelKingMove(board: Board, opposite: Color, currentColor: Color, king: Cell): void {
     const cellsAroundKing = PiecesUtils.findKingMoves(board, king, false);
     const enemyPieces = PiecesUtils.findPiecesByColor(board, opposite, true);

@@ -1,7 +1,7 @@
 import { Board } from "../Board/Board";
 import { Cell } from "../Cell/Cell";
 import { Pawn } from "../Piece/Pawn";
-import { Color, PieceNames } from "../Piece/Piece";
+import { Color, PieceNames } from "../Piece/types";
 
 export class Passant {
   enemyPawns: Cell[] = [];

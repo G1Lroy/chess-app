@@ -1,9 +1,7 @@
 import { Board } from "../Board/Board";
-import { King } from "../Piece/King";
-import { Pawn } from "../Piece/Pawn";
-import { Color, Piece, PieceNames } from "../Piece/Piece";
-import { Rook } from "../Piece/Rook";
+import { Color } from "../Piece/types";
 import { PiecesUtils } from "../Utils/PiecesUtils";
+import { Piece } from "../Piece/Piece";
 
 export class Cell {
   public readonly x: number;

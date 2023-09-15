@@ -1,20 +1,16 @@
 import { FC, useState } from "react";
 import { Cell } from "../models/Cell/Cell";
-import { Color } from "../models/Piece/Piece";
+import { Color } from "../models/Piece/types";
 import "./../assets/styles/GameInformation.css";
 //@ts-ignore
 import castlingIcon from "./../assets/images/castling.svg";
 import useBoardStore from "../store/board";
 import { PiecesUtils } from "../models/Utils/PiecesUtils";
+import useGameStore from "../store/game";
+import useMainStore from "../store/main";
+import usePlayerStore from "../store/player";
+import { ICastlingUtils } from "./types";
 
-interface ICastlingUtils {
-  king: Cell | null;
-  leftRook: Cell | null;
-  rightRook: Cell | null;
-  longCastling: boolean;
-  shortCastling: boolean;
-  kingFirstStep: boolean;
-}
 const initialState: ICastlingUtils = {
   king: null,
   leftRook: null,
@@ -25,19 +21,10 @@ const initialState: ICastlingUtils = {
 };
 
 const GameInformation: FC = () => {
-  const {
-    toggleHelpers,
-    helpers,
-    currentPlayer,
-    board,
-    passTurn,
-    setSelectedCell,
-    colorInCheck,
-    colorInCheckMate,
-    colorInStaleMate,
-    restart,
-    castling,
-  } = useBoardStore();
+  const { board, setSelectedCell } = useBoardStore();
+  const { passTurn, currentPlayer } = usePlayerStore();
+  const { castling, colorInCheck, colorInCheckMate, colorInStaleMate } = useGameStore();
+  const { helpers, toggleHelpers, restart } = useMainStore();
 
   const [castlingUtils, setCastlingUtils] = useState<ICastlingUtils>(initialState);
   const [castlingBtn, setCastlingBtn] = useState(true);
@@ -68,6 +55,7 @@ const GameInformation: FC = () => {
     setCastlingUtils(initialState);
     setCastlingBtn(true);
   };
+ 
   return (
     <div style={{ position: "absolute", top: "25px", right: "25px" }}>
       <label htmlFor="helpers">

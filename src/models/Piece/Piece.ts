@@ -1,27 +1,7 @@
 import { Cell } from "../Cell/Cell";
+import { Color, PieceNames, PieceIcons } from "./types";
 
-export enum Color {
-  WHITE = "WHITE",
-  BLACK = "BLACK",
-}
-export enum PieceNames {
-  PIECE = "PIECE",
-  KING = "KING",
-  KNIGHT = "KNIGHT",
-  PAWN = "PAWN",
-  QUEEN = "QUEEN",
-  ROOK = "ROOK",
-  BISHOP = "BISHOP",
-}
-export enum PieceIcons {
-  PIECE = "",
-  KING = "♚",
-  KNIGHT = "♞",
-  PAWN = "♟︎",
-  QUEEN = "♛",
-  ROOK = "♜",
-  BISHOP = "♝",
-}
+
 export abstract class Piece {
   public readonly color: Color;
   public cell: Cell;
@@ -44,3 +24,4 @@ export abstract class Piece {
     return true;
   }
 }
+

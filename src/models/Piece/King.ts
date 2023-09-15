@@ -1,9 +1,9 @@
 import { Cell } from "../Cell/Cell";
-import { Color, Piece, PieceIcons, PieceNames } from "./Piece";
+import { Piece } from "./Piece";
+import { Color, PieceNames, PieceIcons } from "./types";
 
 export class King extends Piece {
   isFirstStep = true;
-
   constructor(color: Color, cell: Cell) {
     super(color, cell);
     this.name = PieceNames.KING;

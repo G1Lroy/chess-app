@@ -1,6 +1,6 @@
 import { opposite } from "../../helpers/getOppositeColor";
 import { Cell } from "../Cell/Cell";
-import { Color, PieceNames } from "../Piece/Piece";
+import { Color, PieceNames } from "../Piece/types";
 import { KingMovesChecker } from "../Utils/KingMovesChecker";
 import { Board } from "./Board";
 

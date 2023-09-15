@@ -1,4 +1,4 @@
-import { PieceIcons, PieceNames } from "../models/Piece/Piece";
+import { PieceIcons, PieceNames } from "../models/Piece/types";
 
 export const pieces = [
   { name: PieceNames.QUEEN, icon: PieceIcons.QUEEN },

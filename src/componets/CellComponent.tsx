@@ -1,16 +1,14 @@
 import React, { FC } from "react";
-import { Cell } from "../models/Cell/Cell";
-import { Color, PieceNames } from "../models/Piece/Piece";
+import { Color, PieceNames } from "../models/Piece/types";
 import useBoardStore from "../store/board";
-
-interface CellProps {
-  clickHandler: (cell: Cell) => void;
-  cell: Cell;
-  selected: boolean | undefined;
-}
+import useGameStore from "../store/game";
+import useMainStore from "../store/main";
+import { CellProps } from "./types";
 
 const CellComponent: FC<CellProps> = ({ clickHandler, cell, selected }) => {
-  const { helpers, colorInCheck, selectedCell } = useBoardStore();
+  const { selectedCell } = useBoardStore();
+  const { colorInCheck } = useGameStore();
+  const { helpers } = useMainStore();
   return (
     <div
       onClick={() => clickHandler(cell)}
