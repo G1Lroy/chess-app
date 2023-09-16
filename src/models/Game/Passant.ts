@@ -1,3 +1,4 @@
+import { isNumber } from "lodash";
 import { Board } from "../Board/Board";
 import { Cell } from "../Cell/Cell";
 import { Pawn } from "../Piece/Pawn";
@@ -8,27 +9,39 @@ export class Passant {
   public canPassant(color: Color, pawnCell: Cell, board: Board): boolean {
     const validRow = color === Color.WHITE ? 3 : 4;
     if (pawnCell?.piece?.name !== PieceNames.PAWN || pawnCell.y !== validRow) return false;
-    this.findPawnsToPassant(pawnCell, board);
+    this.findPawnsToPassant(pawnCell, board, true);
     if (pawnCell.y === validRow && this.enemyPawns.length) return true;
     return false;
   }
-  private findPawnsToPassant(pawnCell: Cell, board: Board): void {
-    const leftCoordinates = pawnCell.x - 1 > 0 ? pawnCell.x - 1 : null;
+  public findPawnsToPassant(pawnCell: Cell, board: Board, withLongStep: boolean): void {
+    const leftCoordinates = pawnCell.x - 1 >= 0 ? pawnCell.x - 1 : null;
     const rightCoordinates = pawnCell.x + 1 < 8 ? pawnCell.x + 1 : null;
 
-    const leftToPawn = leftCoordinates ? board.getCell(leftCoordinates, pawnCell.y) : null;
+    const leftToPawn = isNumber(leftCoordinates) ? board.getCell(leftCoordinates, pawnCell.y) : null;
     const rightToPawn = rightCoordinates ? board.getCell(rightCoordinates, pawnCell.y) : null;
 
-    if (leftToPawn && leftToPawn.piece instanceof Pawn && leftToPawn.piece.isPawnLongStep)
-      this.enemyPawns.push(leftToPawn);
-    if (rightToPawn && rightToPawn.piece instanceof Pawn && rightToPawn.piece.isPawnLongStep)
-      this.enemyPawns.push(rightToPawn);
+    // тут нужно именно 2 кейса по поиску пешек
+    // те что с походили на 2 клетки
+    // и те что просто ходили
+    // этот медод вызывается в нескольких местах под разные условия
+
+    const leftValid = leftToPawn && leftToPawn.piece instanceof Pawn;
+    const rightValid = rightToPawn && rightToPawn.piece instanceof Pawn;
+
+    if (withLongStep) {
+      if (leftValid && leftToPawn.piece?.isPawnLongStep) this.enemyPawns.push(leftToPawn);
+      if (rightValid && rightToPawn.piece?.isPawnLongStep) this.enemyPawns.push(rightToPawn);
+    } else {
+      if (leftValid) this.enemyPawns.push(leftToPawn);
+      if (rightValid) this.enemyPawns.push(rightToPawn);
+    }
   }
-  public makePassantAvailable(board: Board, color: Color) {
+  public makePassantAvailable(board: Board, color: Color, currentCell: Cell) {
     this.enemyPawns.forEach((p) => {
       const direction = color === Color.WHITE ? p.y - 1 : p.y + 1;
       const cellToPassant = board.getCell(p.x, direction);
-      cellToPassant.availableToPassant = true;
+      const validX = cellToPassant.x - currentCell.x === -1 || cellToPassant.x - currentCell.x === 1;
+      if (validX) cellToPassant.availableToPassant = true;
     });
   }
   public resetPassantCells(board: Board): void {
@@ -37,9 +50,10 @@ export class Passant {
     for (const cell of lines) {
       if (cell.availableToPassant) cell.availableToPassant = false;
     }
+    this.enemyPawns = [];
   }
   public getPawnByPassant(target: Cell, pawnCell: Cell, board: Board): void {
-    this.findPawnsToPassant(pawnCell, board);
+    this.findPawnsToPassant(pawnCell, board, true);
     // удаляем фигуру если она на обной оси с клеткой для взятия на проходе
     this.enemyPawns.forEach((p) => {
       const xDiff = target.x - p.x;

@@ -2,7 +2,6 @@ import "./App.css";
 import BoardComponent from "./componets/BoardComponent";
 import { useEffect } from "react";
 import GameInformation from "./componets/GameInformation";
-import useBoardStore from "./store/board";
 import useMainStore from "./store/main";
 
 function App() {

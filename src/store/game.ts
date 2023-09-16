@@ -22,24 +22,24 @@ const useGameStore = create<GameStore>((set) => {
     colorInCheckMate: null,
     colorInStaleMate: null,
     validateCheck: () => {
-      const board = useBoardStore.getState().board;
-      const currentPlayer = usePlayerStore.getState().currentPlayer;
+      const { board } = useBoardStore.getState();
+      const { currentPlayer } = usePlayerStore.getState();
       set((state) => ({
         ...state,
         colorInCheck: state.check.getColorInCheck(board, currentPlayer, opposite(currentPlayer)),
       }));
     },
     validateCheckMate: () => {
-      const board = useBoardStore.getState().board;
-      const currentPlayer = usePlayerStore.getState().currentPlayer;
+      const { board } = useBoardStore.getState();
+      const { currentPlayer } = usePlayerStore.getState();
       set((state) => ({
         ...state,
         colorInCheckMate: state.checkMate.isCheckMate(board, currentPlayer, opposite(currentPlayer)),
       }));
     },
     validateStaleMate: () => {
-      const board = useBoardStore.getState().board;
-      const currentPlayer = usePlayerStore.getState().currentPlayer;
+      const { board } = useBoardStore.getState();
+      const { currentPlayer } = usePlayerStore.getState();
       set((state) => ({
         ...state,
         colorInStaleMate: state.staleMate.isStaleMate(board, currentPlayer),

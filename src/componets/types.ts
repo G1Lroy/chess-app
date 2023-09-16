@@ -1,3 +1,4 @@
+import { Dispatch, SetStateAction } from "react";
 import { Cell } from "../models/Cell/Cell";
 
 // Game info
@@ -19,4 +20,10 @@ export interface CellProps {
 export interface IChosePieceState {
   visible: boolean;
   targetCell: null | Cell;
+}
+// Pawn Transform
+export interface PawnTransformProps {
+  chosePiece: IChosePieceState;
+  initialState: IChosePieceState;
+  setChosePiece: Dispatch<SetStateAction<IChosePieceState>>;
 }

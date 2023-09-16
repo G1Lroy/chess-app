@@ -41,4 +41,5 @@ export interface BoardStore {
   setBoard: (Board: Board) => void;
   setSelectedCell: (cell: Cell | null) => void;
   restartBoard: () => void;
+  update: () => void;
 }

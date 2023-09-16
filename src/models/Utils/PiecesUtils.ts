@@ -1,5 +1,6 @@
 import { Board } from "../Board/Board";
 import { Cell } from "../Cell/Cell";
+import { Passant } from "../Game/Passant";
 import { King } from "../Piece/King";
 import { Pawn } from "../Piece/Pawn";
 import { Piece } from "../Piece/Piece";
@@ -30,7 +31,7 @@ export class PiecesUtils {
         if (xOffset === 0 && yOffset === 0) continue;
         const newX = king?.x + xOffset;
         const newY = king?.y + yOffset;
-        if (king.isCellOnBoard(newX, newY)) {
+        if (king?.isCellOnBoard(newX, newY)) {
           const cell = board.getCell(newX, newY);
           if (withPieces) kingMoves.push(cell);
           else if (!withPieces && (cell.isEmpty() || cell.piece instanceof King)) kingMoves.push(cell);
@@ -40,7 +41,16 @@ export class PiecesUtils {
     return kingMoves;
   }
   public static checkPawnLongMove(cell: Cell, target: Cell) {
-    if (cell.piece instanceof Pawn && Math.abs(target.y - cell.y) === 2) cell.piece.isPawnLongStep = true;
+    if (cell.piece instanceof Pawn && Math.abs(target.y - cell.y) === 2) {
+      cell.piece.isPawnLongStep = true;
+      const passant = new Passant();
+      passant.findPawnsToPassant(target, cell.board, false);
+      const pawns = passant.enemyPawns;
+      // если на момент хода на две клетки
+      // на этом же ряду небыло пешек
+      // тогда взятие на проходе невозможно
+      if (!pawns.length) cell.piece.isPawnLongStep = false;
+    }
     if (cell.piece instanceof Pawn && Math.abs(target.y - cell.y) === 1) cell.piece.isPawnLongStep = false;
   }
 }

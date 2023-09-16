@@ -2,39 +2,36 @@ import { FC, useEffect, useState } from "react";
 import { Cell } from "../models/Cell/Cell";
 import CellComponent from "./CellComponent";
 import { rankCoordinates } from "../mockObjects/rankCoordinates";
-import { Color, PieceIcons, PieceNames } from "../models/Piece/types";
+import { PieceNames } from "../models/Piece/types";
 import { opposite } from "../helpers/getOppositeColor";
-import { pieces } from "../mockObjects/pieceForTransform";
 import "./../assets/styles/Board.css";
 import useBoardStore from "../store/board";
 import usePlayerStore from "../store/player";
 import useGameStore from "../store/game";
 import { IChosePieceState } from "./types";
+import PawnTransform from "./PawnTransform";
 
 const BoardComponent: FC = () => {
-  const { boardRenderer, board, selectedCell, setSelectedCell } = useBoardStore();
+  const initialState: IChosePieceState = { visible: false, targetCell: null };
+  const { update, board, selectedCell, setSelectedCell } = useBoardStore();
   const { currentPlayer, passTurn } = usePlayerStore();
   const { pawnPassant, colorInCheck, check, pawnUtils, validateCheck, validateCheckMate, validateStaleMate } =
     useGameStore();
 
-  const update = () => {
-    boardRenderer.renderCells(selectedCell, board, currentPlayer);
-    // setBoard(board.clone());
-  };
-  const [firstRender, setFirstRender] = useState(true);
-  const initialState: IChosePieceState = { visible: false, targetCell: null };
   const [chosePiece, setChosePiece] = useState<IChosePieceState>(initialState);
-  const [passantAvailable, setPassantAvailable] = useState(false);
+  const [passantAvailable, setPassantAvailable] = useState<boolean>(false);
+  const [firstRender, setFirstRender] = useState<boolean>(true);
 
   const clickHandler = (cell: Cell) => {
     // выбор фигуры
     if (currentPlayer === cell?.piece?.color) {
       setSelectedCell(cell);
       // Проверка взятия на проходе
+      resetPassantCells();
       const canPassant = pawnPassant.canPassant(currentPlayer, cell, board);
       if (canPassant) {
         setPassantAvailable(true);
-        pawnPassant.makePassantAvailable(board, currentPlayer);
+        pawnPassant.makePassantAvailable(board, currentPlayer, cell);
       }
     }
     // ход фигуры
@@ -49,15 +46,8 @@ const BoardComponent: FC = () => {
       // проверка шаха
       else isCheck(cell);
       // обнуление клеток для взятия на проходе
-      if (passantAvailable) pawnPassant.resetPassantCells(board);
+      resetPassantCells();
     }
-  };
-  const pawnTransform = (piece: { name: PieceNames; icon: PieceIcons }) => {
-    pawnUtils.transform(selectedCell!, chosePiece.targetCell!, piece.name, currentPlayer);
-    update();
-    validateCheck();
-    passTurn();
-    setChosePiece(initialState);
   };
   const isCheck = (cell: Cell) => {
     const isCheckOnClone = check.isCheckOnClone(
@@ -77,6 +67,9 @@ const BoardComponent: FC = () => {
       setSelectedCell(null);
     }
   };
+  const resetPassantCells = () => {
+    if (passantAvailable) pawnPassant.resetPassantCells(board);
+  };
 
   useEffect(() => {
     if (!firstRender) {
@@ -90,30 +83,18 @@ const BoardComponent: FC = () => {
     update();
     setChosePiece(initialState);
   }, [selectedCell]);
+  
   return (
     <div
       onContextMenu={(e) => {
         e.preventDefault();
         setSelectedCell(null);
-        pawnPassant.resetPassantCells(board);
+        resetPassantCells();
       }}
       className="board"
     >
-      {chosePiece.visible && (
-        <div
-          className="chose-piece-container"
-          style={{
-            top: currentPlayer === Color.WHITE ? 20 : "auto",
-            bottom: currentPlayer === Color.BLACK ? 20 : "auto",
-          }}
-        >
-          {pieces.map((piece) => (
-            <div key={piece.name} onClick={() => pawnTransform(piece)}>
-              {piece.icon}
-            </div>
-          ))}
-        </div>
-      )}
+      <PawnTransform chosePiece={chosePiece} initialState={initialState} setChosePiece={setChosePiece} />
+      
       {board.cellsGrid.map((row, rowIndex) => (
         <div key={rowIndex} className="row">
           <span className="files">{8 - rowIndex}</span>
