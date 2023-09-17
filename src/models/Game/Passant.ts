@@ -1,4 +1,3 @@
-import { isNumber } from "lodash";
 import { Board } from "../Board/Board";
 import { Cell } from "../Cell/Cell";
 import { Pawn } from "../Piece/Pawn";
@@ -17,7 +16,8 @@ export class Passant {
     const leftCoordinates = pawnCell.x - 1 >= 0 ? pawnCell.x - 1 : null;
     const rightCoordinates = pawnCell.x + 1 < 8 ? pawnCell.x + 1 : null;
 
-    const leftToPawn = isNumber(leftCoordinates) ? board.getCell(leftCoordinates, pawnCell.y) : null;
+    const leftToPawn =
+      typeof leftCoordinates === "number" ? board.getCell(leftCoordinates, pawnCell.y) : null;
     const rightToPawn = rightCoordinates ? board.getCell(rightCoordinates, pawnCell.y) : null;
 
     // тут нужно именно 2 кейса по поиску пешек

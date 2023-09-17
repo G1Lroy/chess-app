@@ -9,12 +9,12 @@ const useBoardStore = create<BoardStore>((set, get) => ({
   boardRenderer: new BoardRenderer(),
   selectedCell: null,
   setBoard: (board) => set({ board: board }),
+  setSelectedCell: (cell) => set({ selectedCell: cell }),
   update: () => {
     const { boardRenderer, selectedCell, board } = get();
     const { currentPlayer } = usePlayerStore.getState();
     boardRenderer.renderCells(selectedCell, board, currentPlayer);
   },
-  setSelectedCell: (cell) => set({ selectedCell: cell }),
   restartBoard: () => {
     const newBoard = new Board();
     newBoard.constructBoard();

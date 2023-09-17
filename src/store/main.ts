@@ -9,7 +9,9 @@ import { Color } from "../models/Piece/types";
 const useMainStore = create<MainStore>((set) => {
   return {
     helpers: true,
+    gameCondition: "",
     toggleHelpers: (helpers) => set({ helpers }),
+    setGameCondition: (gameCondition) => set({ gameCondition }),
     restart: () => {
       set((state) => ({
         ...state,

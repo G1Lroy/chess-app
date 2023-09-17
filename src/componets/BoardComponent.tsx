@@ -2,23 +2,26 @@ import { FC, useEffect, useState } from "react";
 import { Cell } from "../models/Cell/Cell";
 import CellComponent from "./CellComponent";
 import { rankCoordinates } from "../mockObjects/rankCoordinates";
-import { PieceNames } from "../models/Piece/types";
 import { opposite } from "../helpers/getOppositeColor";
 import "./../assets/styles/Board.css";
 import useBoardStore from "../store/board";
 import usePlayerStore from "../store/player";
 import useGameStore from "../store/game";
-import { IChosePieceState } from "./types";
+
 import PawnTransform from "./PawnTransform";
+import useMainStore from "../store/main";
+import { King } from "../models/Piece/King";
+import { IPawnTransformUtils } from "./types";
 
 const BoardComponent: FC = () => {
-  const initialState: IChosePieceState = { visible: false, targetCell: null };
+  const initialState: IPawnTransformUtils = { visible: false, targetCell: null };
   const { update, board, selectedCell, setSelectedCell } = useBoardStore();
   const { currentPlayer, passTurn } = usePlayerStore();
   const { pawnPassant, colorInCheck, check, pawnUtils, validateCheck, validateCheckMate, validateStaleMate } =
     useGameStore();
+  const { setGameCondition } = useMainStore();
 
-  const [chosePiece, setChosePiece] = useState<IChosePieceState>(initialState);
+  const [pawnTransformUtils, setPawnTransformUtils] = useState<IPawnTransformUtils>(initialState);
   const [passantAvailable, setPassantAvailable] = useState<boolean>(false);
   const [firstRender, setFirstRender] = useState<boolean>(true);
 
@@ -37,12 +40,12 @@ const BoardComponent: FC = () => {
     // ход фигуры
     if (cell.availableToMove && selectedCell !== cell) {
       // запрет брать короля
-      if (cell.piece?.name === PieceNames.KING) return;
+      if (cell.piece instanceof King) return;
       // Реализация взятия на проходе
       if (cell.availableToPassant) pawnPassant.getPawnByPassant(cell, selectedCell!, board);
       // проверка для превращения пешки
       if (!colorInCheck && pawnUtils.isPawnOnLastLine(currentPlayer, selectedCell!, cell))
-        setChosePiece({ ...chosePiece, visible: true, targetCell: cell });
+        setPawnTransformUtils({ ...pawnTransformUtils, visible: true, targetCell: cell });
       // проверка шаха
       else isCheck(cell);
       // обнуление клеток для взятия на проходе
@@ -58,8 +61,8 @@ const BoardComponent: FC = () => {
       opposite(currentPlayer)
     );
     if (isCheckOnClone) {
-      const message = colorInCheck ? "protect your king" : "invalid move, KING must be protected";
-      console.log(message);
+      const message = colorInCheck ? "protect your king" : "invalid move, king must be protected";
+      setGameCondition(message);
     } else {
       selectedCell?.movePiece(cell);
       validateCheck();
@@ -76,14 +79,15 @@ const BoardComponent: FC = () => {
       if (colorInCheck) validateCheckMate();
       else validateStaleMate();
     }
+    setGameCondition("");
     setFirstRender(false);
   }, [currentPlayer]);
 
   useEffect(() => {
     update();
-    setChosePiece(initialState);
+    setPawnTransformUtils(initialState);
   }, [selectedCell]);
-  
+
   return (
     <div
       onContextMenu={(e) => {
@@ -93,8 +97,12 @@ const BoardComponent: FC = () => {
       }}
       className="board"
     >
-      <PawnTransform chosePiece={chosePiece} initialState={initialState} setChosePiece={setChosePiece} />
-      
+      <PawnTransform
+        pawntransformUtils={pawnTransformUtils}
+        initialState={initialState}
+        setPawnTransformUtils={setPawnTransformUtils}
+      />
+
       {board.cellsGrid.map((row, rowIndex) => (
         <div key={rowIndex} className="row">
           <span className="files">{8 - rowIndex}</span>

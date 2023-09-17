@@ -17,13 +17,13 @@ export interface CellProps {
   selected: boolean | undefined;
 }
 //Board component
-export interface IChosePieceState {
+export interface IPawnTransformUtils {
   visible: boolean;
   targetCell: null | Cell;
 }
 // Pawn Transform
 export interface PawnTransformProps {
-  chosePiece: IChosePieceState;
-  initialState: IChosePieceState;
-  setChosePiece: Dispatch<SetStateAction<IChosePieceState>>;
+  pawntransformUtils: IPawnTransformUtils;
+  initialState: IPawnTransformUtils;
+  setPawnTransformUtils: Dispatch<SetStateAction<IPawnTransformUtils>>;
 }

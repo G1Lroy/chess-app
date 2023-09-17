@@ -6,19 +6,24 @@ import { PawnTransformProps } from "./types";
 import useGameStore from "../store/game";
 import useBoardStore from "../store/board";
 
-const PawnTransform: FC<PawnTransformProps> = ({ chosePiece, setChosePiece, initialState }) => {
+const PawnTransform: FC<PawnTransformProps> = ({
+  pawntransformUtils,
+  setPawnTransformUtils,
+  initialState,
+}) => {
   const { currentPlayer, passTurn } = usePlayerStore();
   const { pawnUtils, validateCheck } = useGameStore();
   const { selectedCell, update } = useBoardStore();
 
   const pawnTransform = (piece: { name: PieceNames; icon: PieceIcons }) => {
-    pawnUtils.transform(selectedCell!, chosePiece.targetCell!, piece.name, currentPlayer);
+    pawnUtils.transform(selectedCell!, pawntransformUtils.targetCell!, piece.name, currentPlayer);
     update();
     validateCheck();
     passTurn();
-    setChosePiece(initialState);
+    setPawnTransformUtils(initialState);
   };
-  if (!chosePiece.visible) return null;
+
+  if (!pawntransformUtils.visible) return null;
 
   return (
     <div

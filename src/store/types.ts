@@ -16,6 +16,8 @@ export interface PlayerStore {
 }
 export interface MainStore {
   helpers: boolean;
+  gameCondition: string ;
+  setGameCondition: (gameCondition: string) => void;
   toggleHelpers: (helpers: boolean) => void;
   restart: () => void;
 }

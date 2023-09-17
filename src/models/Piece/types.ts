@@ -1,6 +1,6 @@
 export enum Color {
-  WHITE = "WHITE",
-  BLACK = "BLACK",
+  WHITE = "White",
+  BLACK = "Black",
 }
 export enum PieceNames {
   PIECE = "PIECE",
