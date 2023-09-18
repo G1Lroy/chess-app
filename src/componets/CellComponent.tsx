@@ -18,7 +18,7 @@ const CellComponent: FC<CellProps> = ({ clickHandler, cell, selected }) => {
   const canPassant = cell.availableToPassant;
   const inCheck = cell.piece?.color === colorInCheck;
   const attackedCellAroundKing =
-    selectedCell?.piece?.name === PieceNames.KING && canAttack && selectedCell.piece?.canMove(cell);
+    selectedCell?.piece?.name === PieceNames.KING && !piece && canAttack && selectedCell.piece?.canMove(cell);
 
   const cellClasses = [
     "cell",

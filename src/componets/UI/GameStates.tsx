@@ -10,9 +10,13 @@ const GameStates: FC = () => {
   const { gameCondition } = useMainStore();
   return (
     <>
-      {!colorInCheckMate && !colorInStaleMate && <Message text={`${currentPlayer} turn`}></Message>}
-      {(colorInCheck || gameCondition) && <Message text={gameCondition}></Message>}
-      {!colorInCheckMate && colorInCheck && <Message text={`${colorInCheck} In Check`} />}
+      {!colorInCheckMate && (
+        <>
+          {<Message text={`${currentPlayer} turn`}></Message>}
+          {(colorInCheck || gameCondition) && <Message text={gameCondition}></Message>}
+          {colorInCheck && <Message text={`${colorInCheck} In Check`} />}
+        </>
+      )}
       {colorInCheckMate && <Message text={`${colorInCheckMate} Lose`} />}
       {colorInStaleMate && <Message text={`Stalemate to ${colorInStaleMate}`} />}
     </>

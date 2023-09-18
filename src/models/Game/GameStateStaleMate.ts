@@ -1,11 +1,12 @@
 import { Board } from "../Board/Board";
 import { BoardRenderer } from "../Board/BoardRenderer";
+import { BoardFactory } from "../Board/BoardFactory";
 import { Color } from "../Piece/types";
 import { PiecesUtils } from "../Utils/PiecesUtils";
 
 export class GameStateStaleMate {
   private kingCanMove(board: Board, color: Color) {
-    const clone = board.cloneDeep();
+    const clone = new BoardFactory(board).cloneDeep();
     const king = PiecesUtils.findKing(clone, color);
     const kingMoves = PiecesUtils.findKingMoves(clone, king!, true);
     new BoardRenderer().renderCells(king!, clone, color);

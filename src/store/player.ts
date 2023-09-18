@@ -5,11 +5,11 @@ import { Color } from "../models/Piece/types";
 
 const usePlayerStore = create<PlayerStore>((set) => ({
   currentPlayer: Color.WHITE,
-  setCurrentPlayer: (color) => set({ currentPlayer: color }),
+  setCurrentPlayer: (color) => set((state) => ({ ...state, currentPlayer: color })),
   passTurn: () =>
     set((state) => ({
       ...state,
-      currentPlayer: opposite(state.currentPlayer),
+      currentPlayer: opposite(state.currentPlayer!),
     })),
 }));
 

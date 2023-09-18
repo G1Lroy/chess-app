@@ -32,8 +32,7 @@ export class Cell {
     this.piece.isFirstStep = false;
   }
   public movePiece(target: Cell) {
-    
-    target.setPiece(this.piece as Piece);
+    target.setPiece(this.piece!);
     // метод определяет пешкки которые сделали ход на 2 клетки
     PiecesUtils.checkPawnLongMove(this, target);
     this.piece = null;

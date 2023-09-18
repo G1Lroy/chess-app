@@ -7,7 +7,6 @@ import "./../assets/styles/Board.css";
 import useBoardStore from "../store/board";
 import usePlayerStore from "../store/player";
 import useGameStore from "../store/game";
-
 import PawnTransform from "./PawnTransform";
 import useMainStore from "../store/main";
 import { King } from "../models/Piece/King";
@@ -19,7 +18,7 @@ const BoardComponent: FC = () => {
   const { currentPlayer, passTurn } = usePlayerStore();
   const { pawnPassant, colorInCheck, check, pawnUtils, validateCheck, validateCheckMate, validateStaleMate } =
     useGameStore();
-  const { setGameCondition } = useMainStore();
+  const { setGameCondition, setTakenPieces } = useMainStore();
 
   const [pawnTransformUtils, setPawnTransformUtils] = useState<IPawnTransformUtils>(initialState);
   const [passantAvailable, setPassantAvailable] = useState<boolean>(false);
@@ -42,13 +41,19 @@ const BoardComponent: FC = () => {
       // запрет брать короля
       if (cell.piece instanceof King) return;
       // Реализация взятия на проходе
-      if (cell.availableToPassant) pawnPassant.getPawnByPassant(cell, selectedCell!, board);
+      if (cell.availableToPassant) {
+        const pieceGetByPassant = pawnPassant.getPawnByPassant(cell, selectedCell!, board);
+        setTakenPieces(pieceGetByPassant!);
+      }
       // проверка для превращения пешки
       if (!colorInCheck && pawnUtils.isPawnOnLastLine(currentPlayer, selectedCell!, cell))
         setPawnTransformUtils({ ...pawnTransformUtils, visible: true, targetCell: cell });
       // проверка шаха
-      else isCheck(cell);
+      else {
+        isCheck(cell);
+      }
       // обнуление клеток для взятия на проходе
+
       resetPassantCells();
     }
   };
@@ -64,6 +69,7 @@ const BoardComponent: FC = () => {
       const message = colorInCheck ? "protect your king" : "invalid move, king must be protected";
       setGameCondition(message);
     } else {
+      if (cell.piece) setTakenPieces(cell.piece);
       selectedCell?.movePiece(cell);
       validateCheck();
       passTurn();

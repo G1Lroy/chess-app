@@ -1,4 +1,5 @@
 import { Board } from "../models/Board/Board";
+import { BoardFactory } from "../models/Board/BoardFactory";
 import { BoardRenderer } from "../models/Board/BoardRenderer";
 import { Cell } from "../models/Cell/Cell";
 import { Castling } from "../models/Game/Castling";
@@ -7,6 +8,7 @@ import { GameStateCheckMate } from "../models/Game/GameStateCheckMate";
 import { GameStateStaleMate } from "../models/Game/GameStateStaleMate";
 import { Passant } from "../models/Game/Passant";
 import { PawnTransform } from "../models/Game/PawnTransform";
+import { Piece } from "../models/Piece/Piece";
 import { Color } from "../models/Piece/types";
 
 export interface PlayerStore {
@@ -16,7 +18,11 @@ export interface PlayerStore {
 }
 export interface MainStore {
   helpers: boolean;
-  gameCondition: string ;
+  gameCondition: string;
+  takenPieces: Piece[];
+  // fenNotation: string;
+  // setFenNotation: (fen: string) => void;
+  setTakenPieces: (piece: Piece) => void;
   setGameCondition: (gameCondition: string) => void;
   toggleHelpers: (helpers: boolean) => void;
   restart: () => void;
@@ -44,4 +50,5 @@ export interface BoardStore {
   setSelectedCell: (cell: Cell | null) => void;
   restartBoard: () => void;
   update: () => void;
+  startGameFromFen: (fen: string) => void;
 }

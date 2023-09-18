@@ -5,6 +5,7 @@ import { pieces } from "../mockObjects/pieceForTransform";
 import { PawnTransformProps } from "./types";
 import useGameStore from "../store/game";
 import useBoardStore from "../store/board";
+import useMainStore from "../store/main";
 
 const PawnTransform: FC<PawnTransformProps> = ({
   pawntransformUtils,
@@ -14,8 +15,10 @@ const PawnTransform: FC<PawnTransformProps> = ({
   const { currentPlayer, passTurn } = usePlayerStore();
   const { pawnUtils, validateCheck } = useGameStore();
   const { selectedCell, update } = useBoardStore();
+  const { setTakenPieces } = useMainStore();
 
   const pawnTransform = (piece: { name: PieceNames; icon: PieceIcons }) => {
+    setTakenPieces(pawntransformUtils!.targetCell!.piece!);
     pawnUtils.transform(selectedCell!, pawntransformUtils.targetCell!, piece.name, currentPlayer);
     update();
     validateCheck();

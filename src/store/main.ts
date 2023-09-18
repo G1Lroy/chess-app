@@ -1,5 +1,4 @@
 import { create } from "zustand";
-
 import useBoardStore from "./board";
 import usePlayerStore from "./player";
 import useGameStore from "./game";
@@ -10,18 +9,31 @@ const useMainStore = create<MainStore>((set) => {
   return {
     helpers: true,
     gameCondition: "",
-    toggleHelpers: (helpers) => set({ helpers }),
-    setGameCondition: (gameCondition) => set({ gameCondition }),
+    takenPieces: [],
+    // fenNotation: "",
+    // setFenNotation: (str) => {
+    //   set((state) => ({ ...state, fenNotation: str }));
+    // },
+    setTakenPieces: (piece) => {
+      set((state) => ({
+        ...state,
+        takenPieces: [...state.takenPieces, piece],
+      }));
+    },
+    toggleHelpers: (helpers) => set((state) => ({ ...state, helpers })),
+    setGameCondition: (gameCondition) => set((state) => ({ ...state, gameCondition })),
     restart: () => {
       set((state) => ({
         ...state,
+        fenNotation: "",
         helpers: true,
+        takenPieces: [],
       }));
-      const restartBoard = useBoardStore.getState().restartBoard;
-      const setCurrentPlayer = usePlayerStore.getState().setCurrentPlayer;
-      const restartGameStore = useGameStore.getState().restartGameStore;
-      restartBoard();
+      const { restartBoard } = useBoardStore.getState();
+      const { setCurrentPlayer } = usePlayerStore.getState();
+      const { restartGameStore } = useGameStore.getState();
       setCurrentPlayer(Color.WHITE);
+      restartBoard();
       restartGameStore();
     },
   };

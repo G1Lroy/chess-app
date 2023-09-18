@@ -3,13 +3,15 @@ import { Board } from "../models/Board/Board";
 import { BoardRenderer } from "../models/Board/BoardRenderer";
 import { BoardStore } from "./types";
 import usePlayerStore from "./player";
+import { BoardFactory } from "../models/Board/BoardFactory";
+import { Color } from "../models/Piece/types";
 
 const useBoardStore = create<BoardStore>((set, get) => ({
   board: new Board(),
   boardRenderer: new BoardRenderer(),
   selectedCell: null,
-  setBoard: (board) => set({ board: board }),
-  setSelectedCell: (cell) => set({ selectedCell: cell }),
+  setBoard: (board) => set((state) => ({ ...state, board })),
+  setSelectedCell: (cell) => set((state) => ({ ...state, selectedCell: cell })),
   update: () => {
     const { boardRenderer, selectedCell, board } = get();
     const { currentPlayer } = usePlayerStore.getState();
@@ -19,6 +21,18 @@ const useBoardStore = create<BoardStore>((set, get) => ({
     const newBoard = new Board();
     newBoard.constructBoard();
     newBoard.defaultPieceSetup();
+    set((state) => ({
+      ...state,
+      selectedCell: null,
+      board: newBoard,
+    }));
+  },
+  startGameFromFen: (fen: string) => {
+    const newBoard = new Board();
+    const factory = new BoardFactory(newBoard);
+    factory.fromFEN(fen);
+    const { setCurrentPlayer } = usePlayerStore.getState();
+    setCurrentPlayer(factory.player);
     set((state) => ({
       ...state,
       selectedCell: null,

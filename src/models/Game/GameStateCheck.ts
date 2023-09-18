@@ -1,10 +1,10 @@
 import { Board } from "../Board/Board";
 import { Cell } from "../Cell/Cell";
+import { BoardFactory } from "../Board/BoardFactory";
 import { Color } from "../Piece/types";
 import { PiecesUtils } from "../Utils/PiecesUtils";
 
 export class GameStateCheck {
-  
   public getColorInCheck(board: Board, currentColor: Color, opposite: Color): Color | null {
     const king = PiecesUtils.findKing(board, opposite);
     const pieces = PiecesUtils.findPiecesByColor(board, currentColor, true);
@@ -13,7 +13,7 @@ export class GameStateCheck {
     return color;
   }
   public isCheckOnClone(selectedCell: Cell, board: Board, target: Cell, color: Color, opposite: Color) {
-    const clone = board.cloneDeep();
+    const clone = new BoardFactory(board).cloneDeep();
     let cloneCell: Cell | null = null;
     let cloneTarget: Cell | null = null;
     const cells = clone.cellsGrid.flat();

@@ -1,6 +1,6 @@
+import _ from "lodash";
 import { Cell } from "../Cell/Cell";
 import { Color, PieceNames, PieceIcons } from "./types";
-
 
 export abstract class Piece {
   public readonly color: Color;
@@ -10,6 +10,7 @@ export abstract class Piece {
   public fakeCreated?: boolean;
   public isFirstStep?: boolean;
   public isPawnLongStep?: boolean;
+  public readonly id: string;
 
   constructor(color: Color, cell: Cell) {
     this.color = color;
@@ -17,6 +18,7 @@ export abstract class Piece {
     this.cell.piece = this;
     this.name = PieceNames.PIECE;
     this.icon = PieceIcons.PIECE;
+    this.id = _.uniqueId("pieceID_");
   }
 
   public canMove(targetCell: Cell): boolean {
@@ -24,4 +26,3 @@ export abstract class Piece {
     return true;
   }
 }
-

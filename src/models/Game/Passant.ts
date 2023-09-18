@@ -1,6 +1,7 @@
 import { Board } from "../Board/Board";
 import { Cell } from "../Cell/Cell";
 import { Pawn } from "../Piece/Pawn";
+import { Piece } from "../Piece/Piece";
 import { Color, PieceNames } from "../Piece/types";
 
 export class Passant {
@@ -36,7 +37,7 @@ export class Passant {
       if (rightValid) this.enemyPawns.push(rightToPawn);
     }
   }
-  public makePassantAvailable(board: Board, color: Color, currentCell: Cell) {
+  public makePassantAvailable(board: Board, color: Color, currentCell: Cell): void {
     this.enemyPawns.forEach((p) => {
       const direction = color === Color.WHITE ? p.y - 1 : p.y + 1;
       const cellToPassant = board.getCell(p.x, direction);
@@ -52,12 +53,19 @@ export class Passant {
     }
     this.enemyPawns = [];
   }
-  public getPawnByPassant(target: Cell, pawnCell: Cell, board: Board): void {
+  public getPawnByPassant(target: Cell, pawnCell: Cell, board: Board): void | Piece {
     this.findPawnsToPassant(pawnCell, board, true);
     // удаляем фигуру если она на обной оси с клеткой для взятия на проходе
-    this.enemyPawns.forEach((p) => {
+    let pieceToTake;
+    for (const p of this.enemyPawns) {
       const xDiff = target.x - p.x;
-      if (xDiff === 0) p.piece = null;
-    });
+      if (xDiff === 0) {
+        // делаем глубокую копию
+        pieceToTake = { ...p.piece } as Piece;
+        p.piece = null;
+        break;
+      }
+    }
+    return pieceToTake;
   }
 }
