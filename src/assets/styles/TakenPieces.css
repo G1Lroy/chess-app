@@ -1,0 +1,25 @@
+.taken-pieces {
+    position: fixed;
+    top: 250px;
+    width: 200px;
+    text-align: center;
+    border-radius: 5px;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px 2px;
+}
+
+.piece-container {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.piece {
+    font-size: 40px;
+}
+
+.taken-pieces.left {
+    left: 50px;
+}
+
+.taken-pieces.right {
+    right: 50px;
+}

@@ -9,6 +9,7 @@ import { PawnTransform } from "../models/Game/PawnTransform";
 import useBoardStore from "./board";
 import usePlayerStore from "./player";
 import { GameStore } from "./types";
+import { initialCastlingState } from "../mockObjects/castlingUtils";
 
 const useGameStore = create<GameStore>((set) => {
   return {
@@ -21,6 +22,9 @@ const useGameStore = create<GameStore>((set) => {
     colorInCheck: null,
     colorInCheckMate: null,
     colorInStaleMate: null,
+    castlingUtils: initialCastlingState,
+    setCastlingUtils: (castlingUtilsState) =>
+      set((state) => ({ ...state, castlingUtils: { ...castlingUtilsState } })),
     validateCheck: () => {
       const { board } = useBoardStore.getState();
       const { currentPlayer } = usePlayerStore.getState();
@@ -51,6 +55,7 @@ const useGameStore = create<GameStore>((set) => {
         colorInCheck: null,
         colorInCheckMate: null,
         colorInStaleMate: null,
+        castlingUtils: initialCastlingState,
       }));
     },
   };

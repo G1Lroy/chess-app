@@ -10,10 +10,10 @@ const useMainStore = create<MainStore>((set) => {
     helpers: true,
     gameCondition: "",
     takenPieces: [],
-    // fenNotation: "",
-    // setFenNotation: (str) => {
-    //   set((state) => ({ ...state, fenNotation: str }));
-    // },
+    castlingBtn: true,
+    setCastlingBtn: (condition) => {
+      set((state) => ({ ...state, castlingBtn: condition }));
+    },
     setTakenPieces: (piece) => {
       set((state) => ({
         ...state,

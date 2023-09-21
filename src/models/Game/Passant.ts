@@ -28,10 +28,12 @@ export class Passant {
 
     const leftValid = leftToPawn && leftToPawn.piece instanceof Pawn;
     const rightValid = rightToPawn && rightToPawn.piece instanceof Pawn;
+    const leftFirstStep = leftToPawn?.piece?.isPawnLongStep;
+    const rightFirstStep = rightToPawn?.piece?.isPawnLongStep;
 
     if (withLongStep) {
-      if (leftValid && leftToPawn.piece?.isPawnLongStep) this.enemyPawns.push(leftToPawn);
-      if (rightValid && rightToPawn.piece?.isPawnLongStep) this.enemyPawns.push(rightToPawn);
+      if (leftValid && leftFirstStep) this.enemyPawns.push(leftToPawn);
+      if (rightValid && rightFirstStep) this.enemyPawns.push(rightToPawn);
     } else {
       if (leftValid) this.enemyPawns.push(leftToPawn);
       if (rightValid) this.enemyPawns.push(rightToPawn);
@@ -67,5 +69,17 @@ export class Passant {
       }
     }
     return pieceToTake;
+  }
+  public checkPawnLongMove(cell: Cell, target: Cell): void {
+    if (cell.piece instanceof Pawn && Math.abs(target.y - cell.y) === 2) {
+      cell.piece.isPawnLongStep = true;
+      this.findPawnsToPassant(target, cell.board, false);
+      const pawns = this.enemyPawns;
+      // если на момент хода на две клетки
+      // на этом же ряду небыло пешек
+      // тогда взятие на проходе невозможно
+      if (!pawns.length) cell.piece.isPawnLongStep = false;
+    }
+    if (cell.piece instanceof Pawn && Math.abs(target.y - cell.y) === 1) cell.piece.isPawnLongStep = false;
   }
 }

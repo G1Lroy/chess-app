@@ -1,7 +1,7 @@
 import "./App.css";
 import BoardComponent from "./componets/BoardComponent";
 import { useEffect } from "react";
-import GameInformation from "./componets/GameInformation";
+import GameInformation from "./componets/UI/GameInformation";
 import useMainStore from "./store/main";
 
 function App() {
@@ -13,12 +13,11 @@ function App() {
 
   return (
     <div className="App">
-      <BoardComponent />
       <GameInformation />
+      <BoardComponent />
     </div>
   );
 }
 
 export default App;
 
-// добавить возможность стартовать из FEN нотации

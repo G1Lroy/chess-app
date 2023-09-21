@@ -1,3 +1,4 @@
+import { ICastlingUtils } from "../componets/types";
 import { Board } from "../models/Board/Board";
 import { BoardFactory } from "../models/Board/BoardFactory";
 import { BoardRenderer } from "../models/Board/BoardRenderer";
@@ -20,8 +21,8 @@ export interface MainStore {
   helpers: boolean;
   gameCondition: string;
   takenPieces: Piece[];
-  // fenNotation: string;
-  // setFenNotation: (fen: string) => void;
+  castlingBtn: boolean;
+  setCastlingBtn: (condition: boolean) => void;
   setTakenPieces: (piece: Piece) => void;
   setGameCondition: (gameCondition: string) => void;
   toggleHelpers: (helpers: boolean) => void;
@@ -37,6 +38,8 @@ export interface GameStore {
   castling: Castling;
   pawnUtils: PawnTransform;
   pawnPassant: Passant;
+  castlingUtils: ICastlingUtils;
+  setCastlingUtils: (castlingUtilsState: ICastlingUtils) => void;
   validateCheck: () => void;
   validateCheckMate: () => void;
   validateStaleMate: () => void;

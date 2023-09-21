@@ -1,26 +1,21 @@
-.chose-piece-container {
+.row {
+    text-align: center;
     display: flex;
-
-    position: fixed;
-    left: 50%;
-    transform: translateX(-50%);
-
-    background-color: #ebccae;
-    color: dimgray;
-    font-size: 41px;
-    padding: 0 5px;
-
-    border-radius: 5px;
-    box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;
 }
 
-.chose-piece-container div {
-    cursor: pointer;
-    text-shadow: 1px 2px rgb(255, 255, 255);
-    transition: all 0.1s ease-in-out;
-    ;
+.ranks {
+    text-align: center;
+    font-size: 20px;
+    padding-left: 8.63px;
 }
 
-.chose-piece-container div:hover {
-    transform: scale(0.95);
+.ranks span {
+    display: inline-block;
+    width: 55px;
 }
+
+.files {
+    font-size: 20px;
+    padding: 14px 5px 0 0;
+}
+

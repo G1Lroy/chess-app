@@ -40,17 +40,4 @@ export class PiecesUtils {
     }
     return kingMoves;
   }
-  public static checkPawnLongMove(cell: Cell, target: Cell) {
-    if (cell.piece instanceof Pawn && Math.abs(target.y - cell.y) === 2) {
-      cell.piece.isPawnLongStep = true;
-      const passant = new Passant();
-      passant.findPawnsToPassant(target, cell.board, false);
-      const pawns = passant.enemyPawns;
-      // если на момент хода на две клетки
-      // на этом же ряду небыло пешек
-      // тогда взятие на проходе невозможно
-      if (!pawns.length) cell.piece.isPawnLongStep = false;
-    }
-    if (cell.piece instanceof Pawn && Math.abs(target.y - cell.y) === 1) cell.piece.isPawnLongStep = false;
-  }
 }

@@ -1,7 +1,7 @@
 import { Board } from "../Board/Board";
 import { Color } from "../Piece/types";
-import { PiecesUtils } from "../Utils/PiecesUtils";
 import { Piece } from "../Piece/Piece";
+import { Passant } from "../Game/Passant";
 
 export class Cell {
   public readonly x: number;
@@ -34,7 +34,7 @@ export class Cell {
   public movePiece(target: Cell) {
     target.setPiece(this.piece!);
     // метод определяет пешкки которые сделали ход на 2 клетки
-    PiecesUtils.checkPawnLongMove(this, target);
+    new Passant().checkPawnLongMove(this, target);
     this.piece = null;
   }
   public isEmpty(): boolean {

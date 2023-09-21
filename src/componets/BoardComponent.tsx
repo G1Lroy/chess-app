@@ -11,20 +11,32 @@ import PawnTransform from "./PawnTransform";
 import useMainStore from "../store/main";
 import { King } from "../models/Piece/King";
 import { IPawnTransformUtils } from "./types";
+import { initialCastlingState } from "../mockObjects/castlingUtils";
 
 const BoardComponent: FC = () => {
   const initialState: IPawnTransformUtils = { visible: false, targetCell: null };
   const { update, board, selectedCell, setSelectedCell } = useBoardStore();
   const { currentPlayer, passTurn } = usePlayerStore();
-  const { pawnPassant, colorInCheck, check, pawnUtils, validateCheck, validateCheckMate, validateStaleMate } =
-    useGameStore();
-  const { setGameCondition, setTakenPieces } = useMainStore();
+  const {
+    pawnPassant,
+    setCastlingUtils,
+    colorInCheck,
+    check,
+    pawnUtils,
+    validateCheck,
+    validateCheckMate,
+    validateStaleMate,
+    colorInStaleMate,
+    colorInCheckMate,
+  } = useGameStore();
+  const { setGameCondition, setTakenPieces, setCastlingBtn } = useMainStore();
 
   const [pawnTransformUtils, setPawnTransformUtils] = useState<IPawnTransformUtils>(initialState);
   const [passantAvailable, setPassantAvailable] = useState<boolean>(false);
   const [firstRender, setFirstRender] = useState<boolean>(true);
 
   const clickHandler = (cell: Cell) => {
+    if (colorInCheckMate || colorInStaleMate) return;
     // выбор фигуры
     if (currentPlayer === cell?.piece?.color) {
       setSelectedCell(cell);
@@ -53,7 +65,6 @@ const BoardComponent: FC = () => {
         isCheck(cell);
       }
       // обнуление клеток для взятия на проходе
-
       resetPassantCells();
     }
   };
@@ -66,8 +77,9 @@ const BoardComponent: FC = () => {
       opposite(currentPlayer)
     );
     if (isCheckOnClone) {
-      const message = colorInCheck ? "protect your king" : "invalid move, king must be protected";
+      const message = colorInCheck ? "Protect your king" : "Invalid move, king must be protected";
       setGameCondition(message);
+      setTimeout(() => setGameCondition(""), 3000);
     } else {
       if (cell.piece) setTakenPieces(cell.piece);
       selectedCell?.movePiece(cell);
@@ -85,7 +97,9 @@ const BoardComponent: FC = () => {
       if (colorInCheck) validateCheckMate();
       else validateStaleMate();
     }
-    setGameCondition("");
+    setCastlingUtils(initialCastlingState);
+    setSelectedCell(null);
+    setCastlingBtn(true);
     setFirstRender(false);
   }, [currentPlayer]);
 
@@ -95,39 +109,44 @@ const BoardComponent: FC = () => {
   }, [selectedCell]);
 
   return (
-    <div
-      onContextMenu={(e) => {
-        e.preventDefault();
-        setSelectedCell(null);
-        resetPassantCells();
-      }}
-      className="board"
-    >
+    <>
+      {/* render board */}
+
+      <div
+        className="board"
+        onContextMenu={(e) => {
+          e.preventDefault();
+          setSelectedCell(null);
+          resetPassantCells();
+        }}
+      >
+        {board.cellsGrid.map((row, rowIndex) => (
+          <div key={rowIndex} className="row">
+            <span className="files">{8 - rowIndex}</span>
+            {row.map((cell, cellIndex) => (
+              <CellComponent
+                key={cellIndex}
+                cell={cell}
+                clickHandler={clickHandler}
+                selected={selectedCell?.equals(cell.x, cell.y)}
+              />
+            ))}
+          </div>
+        ))}
+
+        <div className="ranks">
+          {rankCoordinates.map((rank) => (
+            <span key={rank}>{rank}</span>
+          ))}
+        </div>
+      </div>
+
       <PawnTransform
         pawntransformUtils={pawnTransformUtils}
         initialState={initialState}
         setPawnTransformUtils={setPawnTransformUtils}
-      />
-
-      {board.cellsGrid.map((row, rowIndex) => (
-        <div key={rowIndex} className="row">
-          <span className="files">{8 - rowIndex}</span>
-          {row.map((cell, cellIndex) => (
-            <CellComponent
-              key={cellIndex}
-              cell={cell}
-              clickHandler={clickHandler}
-              selected={selectedCell?.equals(cell.x, cell.y)}
-            />
-          ))}
-        </div>
-      ))}
-      <div className="ranks">
-        {rankCoordinates.map((rank) => (
-          <span key={rank}>{rank}</span>
-        ))}
-      </div>
-    </div>
+      ></PawnTransform>
+    </>
   );
 };
 

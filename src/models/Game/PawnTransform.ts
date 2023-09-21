@@ -5,11 +5,12 @@ import { Queen } from "../Piece/Queen";
 import { Rook } from "../Piece/Rook";
 import { Piece } from "../Piece/Piece";
 import { Color, PieceNames } from "../Piece/types";
+import { Pawn } from "../Piece/Pawn";
 
 export class PawnTransform {
   public isPawnOnLastLine(color: Color, selectedCell: Cell, target: Cell) {
     const lastLine = color === Color.WHITE ? 0 : 7;
-    return selectedCell?.piece?.name === PieceNames.PAWN && target.y === lastLine;
+    return selectedCell?.piece instanceof Pawn && target.y === lastLine;
   }
   public transform(selectedCell: Cell, target: Cell, chosenPiece: PieceNames, color: Color): Piece | void {
     selectedCell.piece = null;

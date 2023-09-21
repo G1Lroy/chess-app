@@ -4,6 +4,7 @@ import useBoardStore from "../store/board";
 import useGameStore from "../store/game";
 import useMainStore from "../store/main";
 import { CellProps } from "./types";
+import "./../assets/styles/Cell.css"
 
 const CellComponent: FC<CellProps> = ({ clickHandler, cell, selected }) => {
   const { selectedCell } = useBoardStore();

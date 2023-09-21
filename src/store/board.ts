@@ -4,7 +4,6 @@ import { BoardRenderer } from "../models/Board/BoardRenderer";
 import { BoardStore } from "./types";
 import usePlayerStore from "./player";
 import { BoardFactory } from "../models/Board/BoardFactory";
-import { Color } from "../models/Piece/types";
 
 const useBoardStore = create<BoardStore>((set, get) => ({
   board: new Board(),

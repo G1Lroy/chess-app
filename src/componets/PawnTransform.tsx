@@ -6,6 +6,7 @@ import { PawnTransformProps } from "./types";
 import useGameStore from "../store/game";
 import useBoardStore from "../store/board";
 import useMainStore from "../store/main";
+import "./../assets/styles/PawnTransform.css";
 
 const PawnTransform: FC<PawnTransformProps> = ({
   pawntransformUtils,

@@ -13,7 +13,7 @@ const GameStates: FC = () => {
       {!colorInCheckMate && (
         <>
           {<Message text={`${currentPlayer} turn`}></Message>}
-          {(colorInCheck || gameCondition) && <Message text={gameCondition}></Message>}
+          {gameCondition && <Message text={gameCondition}></Message>}
           {colorInCheck && <Message text={`${colorInCheck} In Check`} />}
         </>
       )}

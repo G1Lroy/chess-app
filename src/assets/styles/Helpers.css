@@ -1,0 +1,11 @@
+.helpers {
+    cursor: pointer;
+    padding: 2px 5px;
+    background-color: #363636;
+    border-radius: 3px;
+    color: white;
+    user-select: none;
+}
+.helpers * {
+    margin-right: 10px;
+}

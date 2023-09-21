@@ -1,0 +1,16 @@
+.fen-form {
+    padding: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 5px;
+    background-color: #36363691;
+    border-radius: 5px;
+}
+
+.fen-form input {
+    width: 100%;
+    padding: 3px;
+    border-radius: 5px;
+    border: none;
+}

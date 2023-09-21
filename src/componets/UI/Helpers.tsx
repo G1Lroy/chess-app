@@ -1,17 +1,12 @@
 import useMainStore from "../../store/main";
+import "./../../assets/styles/Helpers.css";
 
 const Helpers = () => {
   const { helpers, toggleHelpers } = useMainStore();
   return (
-    <label htmlFor="helpers">
+    <label className="helpers" htmlFor="helpers">
+      <input onChange={() => toggleHelpers(!helpers)} checked={helpers} id="helpers" type="checkbox"></input>
       Enable help
-      <input
-        onChange={() => toggleHelpers(!helpers)}
-        style={{ marginLeft: "5px" }}
-        checked={helpers}
-        id="helpers"
-        type="checkbox"
-      ></input>
     </label>
   );
 };

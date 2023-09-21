@@ -27,16 +27,7 @@ export class Board {
     }
   }
   public defaultPieceSetup(): void {
-    // new Pawn(this.white, this.getCell(2, 2));
-    // new Rook(this.black, this.getCell(0, 0));
-    // new Rook(this.white, this.getCell(1, 0));
-    // new King(this.black, this.getCell(7, 0));
-    // new Pawn(this.black, this.getCell(5, 5));
-    // new Pawn(this.black, this.getCell(4, 4));
-    // new Pawn(this.black, this.getCell(1, 4));
-    // new Pawn(this.black, this.getCell(6, 4));
-    // new Queen(this.white, this.getCell(5, 2));
-    // new Bishop(this.white, this.getCell(3, 3));
+
 
     for (let x = 0; x < 8; x++) {
       new Pawn(this.black, this.getCell(x, 1));
