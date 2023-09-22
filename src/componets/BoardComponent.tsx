@@ -35,7 +35,7 @@ const BoardComponent: FC = () => {
   const [passantAvailable, setPassantAvailable] = useState<boolean>(false);
   const [firstRender, setFirstRender] = useState<boolean>(true);
 
-  const clickHandler = (cell: Cell) => {
+  const clickHandler = (cell: Cell): void => {
     if (colorInCheckMate || colorInStaleMate) return;
     // выбор фигуры
     if (currentPlayer === cell?.piece?.color) {
@@ -68,7 +68,7 @@ const BoardComponent: FC = () => {
       resetPassantCells();
     }
   };
-  const isCheck = (cell: Cell) => {
+  const isCheck = (cell: Cell): void => {
     const isCheckOnClone = check.isCheckOnClone(
       selectedCell as Cell,
       board,
@@ -88,7 +88,7 @@ const BoardComponent: FC = () => {
       setSelectedCell(null);
     }
   };
-  const resetPassantCells = () => {
+  const resetPassantCells = (): void => {
     if (passantAvailable) pawnPassant.resetPassantCells(board);
   };
 

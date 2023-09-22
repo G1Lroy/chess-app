@@ -12,7 +12,13 @@ export class GameStateCheck {
     pieces.find((piece) => (piece.canMove(king!) ? (color = king!.piece!.color) : color));
     return color;
   }
-  public isCheckOnClone(selectedCell: Cell, board: Board, target: Cell, color: Color, opposite: Color) {
+  public isCheckOnClone(
+    selectedCell: Cell,
+    board: Board,
+    target: Cell,
+    color: Color,
+    opposite: Color
+  ): Color | null {
     const clone = new BoardFactory(board).cloneDeep();
     let cloneCell: Cell | null = null;
     let cloneTarget: Cell | null = null;

@@ -18,7 +18,7 @@ const PawnTransform: FC<PawnTransformProps> = ({
   const { selectedCell, update } = useBoardStore();
   const { setTakenPieces } = useMainStore();
 
-  const pawnTransform = (piece: { name: PieceNames; icon: PieceIcons }) => {
+  const pawnTransform = (piece: { name: PieceNames; icon: PieceIcons }): void => {
     setTakenPieces(pawntransformUtils!.targetCell!.piece!);
     pawnUtils.transform(selectedCell!, pawntransformUtils.targetCell!, piece.name, currentPlayer);
     update();

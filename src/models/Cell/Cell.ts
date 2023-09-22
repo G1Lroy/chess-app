@@ -26,12 +26,12 @@ export class Cell {
   public equals(otherX: number, otherY: number): boolean {
     return this.x === otherX && this.y === otherY;
   }
-  public setPiece(piece: Piece) {
+  public setPiece(piece: Piece): void {
     this.piece = piece;
     this.piece.cell = this;
     this.piece.isFirstStep = false;
   }
-  public movePiece(target: Cell) {
+  public movePiece(target: Cell): void {
     target.setPiece(this.piece!);
     // метод определяет пешкки которые сделали ход на 2 клетки
     new Passant().checkPawnLongMove(this, target);

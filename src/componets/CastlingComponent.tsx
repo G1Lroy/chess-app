@@ -14,11 +14,12 @@ import "./../assets/styles/Castling.css";
 const CastlingComponent: FC = () => {
   const { board, setSelectedCell } = useBoardStore();
   const { passTurn, currentPlayer } = usePlayerStore();
-  const { castling, colorInCheck, castlingUtils, setCastlingUtils } = useGameStore();
+  const { castling, colorInCheck, castlingUtils, setCastlingUtils, colorInCheckMate, colorInStaleMate } =
+    useGameStore();
   const { setGameCondition, gameCondition, castlingBtn, setCastlingBtn } = useMainStore();
 
-  const checkCastling = () => {
-    if (gameCondition === "Castling unavailable") return;
+  const checkCastling = (): void => {
+    if (gameCondition === "Castling unavailable" || colorInCheckMate || colorInStaleMate) return;
 
     const king = PiecesUtils.findKing(board, currentPlayer);
     const [leftRook, rightRook] = castling.findRooks(board, currentPlayer);
@@ -39,7 +40,7 @@ const CastlingComponent: FC = () => {
       setTimeout(() => setGameCondition(""), 3000);
     }
   };
-  const makeCastling = (islong: boolean, rook: Cell | null, king: Cell | null) => {
+  const makeCastling = (islong: boolean, rook: Cell | null, king: Cell | null): void => {
     castling.makeCastlingMoves(board, king!, rook!, islong);
     passTurn();
   };

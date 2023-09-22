@@ -25,7 +25,6 @@ const useMainStore = create<MainStore>((set) => {
     restart: () => {
       set((state) => ({
         ...state,
-        fenNotation: "",
         helpers: true,
         takenPieces: [],
       }));

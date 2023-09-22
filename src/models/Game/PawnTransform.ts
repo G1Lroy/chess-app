@@ -8,11 +8,11 @@ import { Color, PieceNames } from "../Piece/types";
 import { Pawn } from "../Piece/Pawn";
 
 export class PawnTransform {
-  public isPawnOnLastLine(color: Color, selectedCell: Cell, target: Cell) {
+  public isPawnOnLastLine(color: Color, selectedCell: Cell, target: Cell): boolean {
     const lastLine = color === Color.WHITE ? 0 : 7;
     return selectedCell?.piece instanceof Pawn && target.y === lastLine;
   }
-  public transform(selectedCell: Cell, target: Cell, chosenPiece: PieceNames, color: Color): Piece | void {
+  public transform(selectedCell: Cell, target: Cell, chosenPiece: PieceNames, color: Color): void {
     selectedCell.piece = null;
     switch (chosenPiece) {
       case PieceNames.QUEEN:

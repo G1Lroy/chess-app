@@ -1,7 +1,7 @@
 import { Cell } from "../Cell/Cell";
 
 export class LongRangePieceMath {
-  public static isEmptyDiagonal(target: Cell, x: number, y: number) {
+  public static isEmptyDiagonal(target: Cell, x: number, y: number):boolean {
     const xDiff = Math.abs(x - target.x);
     const yDiff = Math.abs(y - target.y);
     if (xDiff !== yDiff) return false;
@@ -14,7 +14,7 @@ export class LongRangePieceMath {
     }
     return true;
   }
-  public static isEmptyVetrical(target: Cell, x: number, y: number) {
+  public static isEmptyVetrical(target: Cell, x: number, y: number):boolean {
     if (x !== target.x) return false;
 
     const minY = Math.min(y, target.y);
@@ -27,7 +27,7 @@ export class LongRangePieceMath {
 
     return true;
   }
-  public static isEmptyHorizontal(target: Cell, x: number, y: number) {
+  public static isEmptyHorizontal(target: Cell, x: number, y: number):boolean {
     if (y !== target.y) return false;
 
     const minX = Math.min(x, target.x);

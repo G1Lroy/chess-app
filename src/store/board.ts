@@ -26,11 +26,11 @@ const useBoardStore = create<BoardStore>((set, get) => ({
       board: newBoard,
     }));
   },
-  startGameFromFen: (fen: string) => {
+  startGameFromFen: (fen) => {
+    const { setCurrentPlayer } = usePlayerStore.getState();
     const newBoard = new Board();
     const factory = new BoardFactory(newBoard);
     factory.fromFEN(fen);
-    const { setCurrentPlayer } = usePlayerStore.getState();
     setCurrentPlayer(factory.player);
     set((state) => ({
       ...state,

@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, FormEvent, useState } from "react";
 import useBoardStore from "../../store/board";
 import useMainStore from "../../store/main";
 //@ts-ignore
@@ -10,7 +10,7 @@ const FenInput: FC = () => {
   const { setGameCondition } = useMainStore();
   const [fenText, setFentext] = useState("");
 
-  const formSubmit = (e: any) => {
+  const formSubmit = (e: FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
     if (validateFEN(fenText)) {
       startGameFromFen(fenText);
