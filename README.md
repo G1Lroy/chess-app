@@ -1,5 +1,5 @@
 # Chess Game 
-[Deployment](https://ilya-potapow.github.io/chess-app/)
+[Deployment](https://g1lroy.github.io/chess-app/)
 
 Chess game created using React, TypeScript and Zustand. The game logic is implemented in a class-based model that handles all the rules and mechanics of chess, and React is responsible for rendering and updating UI and game elements.
 
